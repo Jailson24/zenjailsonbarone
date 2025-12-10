@@ -81,7 +81,8 @@ function initCarousel() {
             behavior: 'smooth'
         });
         
-        track.style.transform = `translateX(${-index * (slideWidth + gap)}px)`;
+        // A linha abaixo foi comentada pois o scrollIntoView é geralmente preferível ou a transição CSS já lida com isso.
+        // track.style.transform = `translateX(${-index * (slideWidth + gap)}px)`; 
     }
 
     next.addEventListener("click", () => {
@@ -131,6 +132,42 @@ function initSmartHeader() {
 }
 
 /* ============================================================
+   FUNÇÃO AUXILIAR - RENDERIZAÇÃO DE DEPOIMENTO (NOVO)
+============================================================ */
+function renderStars(rating) {
+    const numRating = parseInt(rating, 10);
+    // Renderiza estrelas preenchidas (★) e vazias (☆)
+    const filled = '★'.repeat(numRating);
+    const empty = '★'.repeat(5 - numRating); // O CSS usa a mesma estrela para vazia, mas ajusta a cor.
+    return filled + empty;
+}
+
+function renderReview(name, rating, comment) {
+    const container = document.getElementById('reviewsContainer');
+    if (!container) return;
+
+    const starsHtml = renderStars(rating);
+
+    const reviewHtml = `
+        <div class="review visible">
+            <p>"${comment}"</p>
+            <div class="stars">${starsHtml}</div>
+            <span class="author">— ${name} (Novo - Publicado)</span>
+        </div>
+    `;
+
+    // Adiciona o novo depoimento no início do contêiner (mais visível)
+    container.insertAdjacentHTML('afterbegin', reviewHtml);
+    
+    // Opcional: Acionar a animação "reveal" manualmente
+    const newReview = container.firstElementChild;
+    if (newReview) {
+        newReview.classList.add('visible');
+    }
+}
+
+
+/* ============================================================
    5) FORMULÁRIOS — Envio para Apps Script (E-mail/Planilha)
 ============================================================ */
 
@@ -173,6 +210,9 @@ async function sendFormData(data, formType, statusElement, form) {
         if (formType === 'quote') {
             statusElement.textContent = "✅ Cotação enviada com sucesso por e-mail! Entraremos em contato.";
         } else if (formType === 'review') {
+            // CHAMADA PARA RENDERIZAR O DEPOIMENTO NO SITE
+            renderReview(data.rName, data.rRating, data.rComment); 
+
             statusElement.textContent = "✅ Depoimento enviado para moderação! Obrigado pela sua avaliação.";
         } else if (formType === 'register') {
             statusElement.textContent = "✅ Cadastro realizado com sucesso! Em breve você receberá novidades.";
