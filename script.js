@@ -134,7 +134,7 @@ function initSmartHeader() {
 ============================================================ */
 
 function renderStars(rating) {
-    // Usamos '★★★★★'. O CSS do .stars usa o atributo data-rating para colorir corretamente.
+    // Retorna 5 estrelas sólidas. O CSS do .stars usa o atributo data-rating para colorir de ouro
     return '★'.repeat(5); 
 }
 
@@ -167,7 +167,6 @@ async function loadReviewsFromBackend() {
     const scriptIdInput = document.getElementById("scriptIdReview");
     const container = document.getElementById('reviewsContainer');
     
-    // Verifica se a URL foi configurada
     if (!scriptIdInput || scriptIdInput.value.includes('COLE_AQUI')) {
         container.innerHTML = `<p style="color:red; text-align:center;">⚠️ **ATENÇÃO:** Configure a URL do Apps Script no index.html para carregar os depoimentos.</p>`;
         return; 
@@ -190,7 +189,6 @@ async function loadReviewsFromBackend() {
             return;
         }
 
-        // Limpa o container e renderiza
         container.innerHTML = '';
         if (reviews.length === 0) {
             container.innerHTML = `<p style="text-align:center; opacity:0.7;">Seja o primeiro a deixar um depoimento!</p>`;
@@ -253,7 +251,6 @@ async function sendFormData(data, formType, statusElement, form) {
         if (formType === 'quote') {
             statusElement.textContent = "✅ Cotação enviada com sucesso por e-mail! Entraremos em contato.";
         } else if (formType === 'review') {
-            // Depoimento enviado para aprovação no back-end
             statusElement.textContent = "✅ Depoimento enviado! Você receberá um e-mail de confirmação. Após a aprovação manual, ele aparecerá no site.";
         } else if (formType === 'register') {
             statusElement.textContent = "✅ Cadastro realizado com sucesso! Em breve você receberá novidades.";
@@ -291,7 +288,7 @@ function initQuoteForm() {
     });
 }
 
-// Inicializa o Formulário de Depoimentos (Atualizada para coletar E-mail)
+// Inicializa o Formulário de Depoimentos
 function initReviewForm() {
     const form = document.getElementById("addReviewForm");
     const status = document.getElementById("reviewFormStatus");
@@ -304,7 +301,7 @@ function initReviewForm() {
         
         const data = {
             rName: document.getElementById("rName").value.trim(),
-            rEmailReview: document.getElementById("rEmailReview").value.trim(), // NOVO CAMPO
+            rEmailReview: document.getElementById("rEmailReview").value.trim(), 
             rRating: rating ? rating.value : '0', 
             rComment: document.getElementById("rComment").value.trim()
         };
