@@ -1,6 +1,6 @@
 /* ============================================================
    SCRIPT.JS — Código atualizado e otimizado
-   - TEMA, SCROLL, CARROSSEL, HEADER, FORMULÁRIOS, MODAL
+   - Implementação real de Back-end com Apps Script (GET/POST)
 ============================================================ */
 
 /* ============================================================
@@ -80,9 +80,6 @@ function initCarousel() {
             left: scrollAmount,
             behavior: 'smooth'
         });
-        
-        // A linha abaixo foi comentada pois o scrollIntoView é geralmente preferível ou a transição CSS já lida com isso.
-        // track.style.transform = `translateX(${-index * (slideWidth + gap)}px)`; 
     }
 
     next.addEventListener("click", () => {
@@ -131,65 +128,111 @@ function initSmartHeader() {
     setTimeout(checkOverflow, 100);
 }
 
+
 /* ============================================================
-   FUNÇÃO AUXILIAR - RENDERIZAÇÃO DE DEPOIMENTO (NOVO)
+   FUNÇÕES DE RENDERIZAÇÃO E CARREGAMENTO DE DEPOIMENTOS
 ============================================================ */
+
 function renderStars(rating) {
-    const numRating = parseInt(rating, 10);
-    // Renderiza estrelas preenchidas (★) e vazias (☆)
-    const filled = '★'.repeat(numRating);
-    const empty = '★'.repeat(5 - numRating); // O CSS usa a mesma estrela para vazia, mas ajusta a cor.
-    return filled + empty;
+    // Usamos '★★★★★'. O CSS do .stars usa o atributo data-rating para colorir corretamente.
+    return '★'.repeat(5); 
 }
 
-function renderReview(name, rating, comment) {
+function renderReview(review) {
     const container = document.getElementById('reviewsContainer');
     if (!container) return;
 
-    const starsHtml = renderStars(rating);
+    const starsHtml = renderStars(review.rating); 
 
     const reviewHtml = `
         <div class="review visible">
-            <p>"${comment}"</p>
-            <div class="stars">${starsHtml}</div>
-            <span class="author">— ${name} (Novo - Publicado)</span>
+            <p>"${review.comment}"</p>
+            <div class="stars" data-rating="${review.rating}">${starsHtml}</div>
+            <span class="author">— ${review.name}</span>
         </div>
     `;
 
-    // Adiciona o novo depoimento no início do contêiner (mais visível)
+    // Adiciona o depoimento no início do contêiner (mais novos primeiro)
     container.insertAdjacentHTML('afterbegin', reviewHtml);
     
-    // Opcional: Acionar a animação "reveal" manualmente
-    const newReview = container.firstElementChild;
-    if (newReview) {
-        newReview.classList.add('visible');
+    // Aciona a animação de reveal
+    const newReviewEl = container.firstElementChild;
+    if (newReviewEl) {
+        newReviewEl.classList.add('visible');
+    }
+}
+
+// NOVO: Função para carregar depoimentos do Apps Script (GET)
+async function loadReviewsFromBackend() {
+    const scriptIdInput = document.getElementById("scriptIdReview");
+    const container = document.getElementById('reviewsContainer');
+    
+    // Verifica se a URL foi configurada
+    if (!scriptIdInput || scriptIdInput.value.includes('COLE_AQUI')) {
+        container.innerHTML = `<p style="color:red; text-align:center;">⚠️ **ATENÇÃO:** Configure a URL do Apps Script no index.html para carregar os depoimentos.</p>`;
+        return; 
+    }
+    
+    const SCRIPT_URL = scriptIdInput.value;
+    container.innerHTML = '<p style="text-align:center; opacity:0.7;">Carregando depoimentos...</p>';
+
+    try {
+        const response = await fetch(SCRIPT_URL, { method: 'GET' });
+        
+        const text = await response.text(); 
+        
+        let reviews;
+        try {
+            reviews = JSON.parse(text);
+        } catch (e) {
+            console.error("Erro ao parsear JSON. Resposta do Apps Script:", text);
+            container.innerHTML = `<p style="color:red; text-align:center;">Erro na comunicação com o servidor de depoimentos. Verifique a implantação do Apps Script.</p>`;
+            return;
+        }
+
+        // Limpa o container e renderiza
+        container.innerHTML = '';
+        if (reviews.length === 0) {
+            container.innerHTML = `<p style="text-align:center; opacity:0.7;">Seja o primeiro a deixar um depoimento!</p>`;
+            return;
+        }
+
+        reviews.forEach(review => renderReview(review));
+        
+    } catch (error) {
+        console.error('Erro ao carregar depoimentos do Apps Script:', error);
+        container.innerHTML = `<p style="color:red; text-align:center;">Erro ao carregar depoimentos. Verifique a conexão.</p>`;
     }
 }
 
 
 /* ============================================================
-   5) FORMULÁRIOS — Envio para Apps Script (E-mail/Planilha)
+   5) FORMULÁRIOS — Envio para Apps Script (POST)
 ============================================================ */
 
-const SCRIPT_ID_PLACEHOLDER = "YOUR_APPS_SCRIPT_ID_AQUI";
+const SCRIPT_ID_PLACEHOLDER = "AKfycbxZNMFb1irqYJeAguhDGvQAyY43DyB2YmjWFBGrQ9la9uT4kmkguJxPyM6DjjH10PYl";
 
 // Função utilitária para enviar dados via fetch
 async function sendFormData(data, formType, statusElement, form) {
-    // Escolhe o ID do script correto com base no formulário
-    const scriptIdInput = formType === 'register' 
-        ? document.getElementById("scriptIdRegister") 
-        : document.getElementById("scriptId");
+    let scriptIdInput;
+    if (formType === 'review') {
+        scriptIdInput = document.getElementById("scriptIdReview");
+    } else if (formType === 'register') {
+        scriptIdInput = document.getElementById("scriptIdRegister");
+    } else {
+        scriptIdInput = document.getElementById("scriptId");
+    }
 
-    if (!scriptIdInput || scriptIdInput.value === SCRIPT_ID_PLACEHOLDER) {
+    if (!scriptIdInput || scriptIdInput.value.includes('COLE_AQUI')) {
         statusElement.style.color = 'red';
-        statusElement.textContent = `❌ Erro: Por favor, substitua "YOUR_APPS_SCRIPT_ID_AQUI" no index.html pelo seu ID do Apps Script.`;
+        statusElement.textContent = `❌ Erro: Por favor, substitua o texto no input hidden do formulário pela URL do Apps Script.`;
         return;
     }
     
     statusElement.textContent = "Enviando...";
     statusElement.style.color = 'var(--accent-1)';
 
-    const SCRIPT_URL = `https://script.google.com/macros/s/${scriptIdInput.value}/exec`;
+    const SCRIPT_URL = scriptIdInput.value;
 
     const formData = new URLSearchParams({
         formType: formType,
@@ -210,10 +253,8 @@ async function sendFormData(data, formType, statusElement, form) {
         if (formType === 'quote') {
             statusElement.textContent = "✅ Cotação enviada com sucesso por e-mail! Entraremos em contato.";
         } else if (formType === 'review') {
-            // CHAMADA PARA RENDERIZAR O DEPOIMENTO NO SITE
-            renderReview(data.rName, data.rRating, data.rComment); 
-
-            statusElement.textContent = "✅ Depoimento enviado para moderação! Obrigado pela sua avaliação.";
+            // Depoimento enviado para aprovação no back-end
+            statusElement.textContent = "✅ Depoimento enviado! Você receberá um e-mail de confirmação. Após a aprovação manual, ele aparecerá no site.";
         } else if (formType === 'register') {
             statusElement.textContent = "✅ Cadastro realizado com sucesso! Em breve você receberá novidades.";
             // Fechar o modal após sucesso no cadastro
@@ -250,7 +291,7 @@ function initQuoteForm() {
     });
 }
 
-// Inicializa o Formulário de Depoimentos
+// Inicializa o Formulário de Depoimentos (Atualizada para coletar E-mail)
 function initReviewForm() {
     const form = document.getElementById("addReviewForm");
     const status = document.getElementById("reviewFormStatus");
@@ -263,6 +304,7 @@ function initReviewForm() {
         
         const data = {
             rName: document.getElementById("rName").value.trim(),
+            rEmailReview: document.getElementById("rEmailReview").value.trim(), // NOVO CAMPO
             rRating: rating ? rating.value : '0', 
             rComment: document.getElementById("rComment").value.trim()
         };
@@ -282,12 +324,11 @@ function initRegisterForm() {
     form.addEventListener("submit", (e) => {
         e.preventDefault();
 
-        // Dados a serem coletados: Nome, Sobrenome, Data de Nascimento, Telefone (NOVO), Email
         const data = {
             rFName: document.getElementById("rFName").value.trim(),
             rLName: document.getElementById("rLName").value.trim(),
             rDOB: document.getElementById("rDOB").value.trim(), 
-            rPhone: document.getElementById("rPhone").value.trim(), // <-- COLETA DO TELEFONE
+            rPhone: document.getElementById("rPhone").value.trim(), 
             rEmail: document.getElementById("rEmail").value.trim()
         };
 
@@ -347,4 +388,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initReviewForm(); 
     initRegisterForm(); 
     initModal();
+    
+    // CARREGA OS DEPOIMENTOS PERMANENTES DO BACKEND
+    loadReviewsFromBackend(); 
 });
