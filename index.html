@@ -104,30 +104,18 @@
     <h2>Depoimentos</h2>
 
     <div id="reviewsContainer" class="reviews">
-        <div class="review">
-            <p>"Atendimento impecável! Me ajudaram rápido na hora que precisei."</p>
-            <div class="stars">★★★★★</div>
-            <span class="author">— João M.</span>
-        </div>
-
-        <div class="review">
-            <p>"Foi a melhor escolha para proteger meu carro."</p>
-            <div class="stars">★★★★★</div>
-            <span class="author">— Ana Paula</span>
-        </div>
-
-        <div class="review">
-            <p>"Preço justo e atendimento incrível!"</p>
-            <div class="stars">★★★★★</div>
-            <span class="author">— Carlos Daniel</span>
-        </div>
     </div>
     
     <div class="add-review-container">
         <h3>Deixe seu depoimento</h3>
         <form id="addReviewForm" class="contact-form">
+            <input type="hidden" id="scriptIdReview" value="https://script.google.com/macros/s/AKfycbz4roFwVfPzK4KtU7-SLThPE5rpPiX9MmhhWc4eefSWjktURl8-MxrdJ-0GwX6UITQN1w/exec">
+
             <label for="rName">Seu Nome</label>
             <input id="rName" type="text" placeholder="Seu nome" required>
+
+            <label for="rEmailReview">Seu E-mail</label>
+            <input id="rEmailReview" type="email" placeholder="seu.email@exemplo.com" required>
 
             <label>Sua Avaliação (Estrelas)</label>
             <div class="star-rating" role="radiogroup" aria-label="Avaliação em estrelas">
@@ -149,7 +137,7 @@
             <button type="submit" class="btn btn-primary">Enviar Depoimento</button>
             <p id="reviewFormStatus" style="text-align: center; color: var(--accent-1); margin-top: 10px;"></p>
         </form>
-        <p class="review-disclaimer">O seu depoimento será publicado após moderação e aprovação.</p>
+        <p class="review-disclaimer">Seu depoimento será enviado para moderação. Assim que for "Aprovado" na Planilha, ele será exibido publicamente para todos os clientes. Você receberá uma confirmação por e-mail.</p>
     </div>
 </section>
 
