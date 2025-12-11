@@ -1,15 +1,15 @@
-const CACHE_NAME = 'site-seguro-v4'; // Versão atualizada
+const CACHE_NAME = 'site-seguro-v5'; // Versão final para forçar atualização
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/script.js',
-  '/manifest.json',
-  '/img/gal1.jpg',
-  '/img/gal2.jpg',
-  '/img/gal3.jpg',
-  '/img/logo.png',
-  '/img/thumbnail.jpg' // Adicionado o thumbnail
+  '/', // Raiz do site
+  'index.html',
+  'styles.css',
+  'script.js',
+  'manifest.json',
+  'img/gal1.jpg',
+  'img/gal2.jpg',
+  'img/gal3.jpg',
+  'img/logo.png',
+  'img/thumbnail.jpg'
 ];
 
 self.addEventListener('install', event => {
@@ -32,8 +32,7 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const req = event.request;
 
-  // IMPORTANTE: Não interfere em APIs externas (como o Google Apps Script)
-  // Deixa o navegador fazer a requisição normalmente, respeitando o CORS.
+  // Não interfere em APIs externas (como o Google Apps Script)
   if (!req.url.startsWith(self.location.origin)) {
     return;
   }
@@ -41,7 +40,7 @@ self.addEventListener('fetch', event => {
   // Navegação → network first
   if (req.mode === 'navigate') {
     event.respondWith(
-      fetch(req).catch(() => caches.match('/index.html'))
+      fetch(req).catch(() => caches.match('index.html')) // Usa 'index.html' sem barra
     );
     return;
   }
