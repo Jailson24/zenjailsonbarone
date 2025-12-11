@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>ZEN • Seguros</title>
     <meta name="description" content="Seguro automotivo completo, assistência 24h, coberturas essenciais e atendimento especializado. Solicite sua cotação.">
@@ -17,7 +17,6 @@
     <link rel="apple-touch-icon" href="img/icon-512.png">
 
     <link rel="stylesheet" href="styles.css">
-    
     <link rel="preload" href="styles.css" as="style">
     <link rel="preload" href="script.js" as="script">
 </head>
@@ -25,38 +24,28 @@
 <body>
 
 <header class="header wrap" role="banner">
-    <div class="brand" aria-label="Identidade visual">
+    <div class="brand">
         <div class="logo">
-            <img src="./img/logo.png" alt="Logo oficial do Seguro Automotivo">
+            <img src="./img/logo.png" alt="Logo">
         </div>
         <div class="title">
             <h1>ZEN Seguros</h1>
             <h1>Jailson Barone</h1>
             <h2>Representante Autorizado</h2>
-
             <p class="muted">Seu Veículo Protegido 24 horas!</p>
         </div>
     </div>
 
-    <div class="header-actions" role="group" aria-label="Ações rápidas">
-        <button id="themeToggle" class="icon-btn" aria-pressed="false" aria-label="Alternar modo claro/escuro">🌙</button>
-
-        <a id="whatsappTop"
-           class="btn btn-primary"
-           href="https://wa.me/5521997882718?text=Olá, quero uma cotação!"
-           target="_blank"
-           rel="noopener"
-           aria-label="Abrir WhatsApp para atendimento">
-           WhatsApp
-        </a>
+    <div class="header-actions">
+        <button id="themeToggle" class="icon-btn">🌙</button>
+        <a id="whatsappTop" class="btn btn-primary" href="https://wa.me/5521997882718?text=Olá, quero uma cotação!" target="_blank">WhatsApp</a>
     </div>
 </header>
 
 
 <section class="hero wrap reveal">
-    <div class="hero-video" id="ytLazy" role="button" aria-label="Assistir vídeo institucional sobre proteção automotiva" tabindex="0">
-        <img src="img/thumbnail.jpg" alt="Miniatura do vídeo: Cobertura completa de seguro auto com logo Proteção Total" class="yt-thumb">
-
+    <div class="hero-video" id="ytLazy">
+        <img src="img/thumbnail.jpg" class="yt-thumb">
         <div class="yt-play"></div>
     </div>
 
@@ -64,20 +53,18 @@
         document.addEventListener("DOMContentLoaded", () => {
             const yt = document.getElementById("ytLazy");
             const loadVideo = () => {
-                // ID DO VÍDEO CORRIGIDO
                 yt.innerHTML = `<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen loading="lazy"></iframe>`;
             };
             yt.addEventListener("click", loadVideo);
-            yt.addEventListener("keypress", (e) => { if (e.key === "Enter") loadVideo(); });
         });
     </script>
 
     <div class="hero-text">
         <h2>Proteção que acompanha você</h2>
         <p>Tenha tranquilidade com coberturas completas e assistência rápida.</p>
-        <a href="https://drive.google.com/file/d/1C_IjKY_Y2qe64_rMFT16UvTMApRDrvaP/view?usp=drive_link" target="_blank" class="btn btn-primary">Baixe as Condições Gerais</a>
+        <a href="https://drive.google.com/file/d/1C_IjKY_Y2qe64_rMFT16UvTMApRDrvaP/view?usp=drive_link" target="_blank" class="btn btn-primary">Baixar Condições Gerais</a>
         <button id="openRegisterModal" class="btn">Receber Novidades</button>
     </div>
 </section>
@@ -86,16 +73,16 @@
 <section class="carousel-section wrap reveal">
     <h2>Alguns de nossos segurados</h2>
 
-    <div class="carousel" aria-label="Galeria de imagens">
-        <button class="carousel-btn prev" aria-label="Slide anterior">‹</button>
+    <div class="carousel">
+        <button class="carousel-btn prev">‹</button>
 
         <div class="carousel-track">
-            <img src="img/gal1.jpg" alt="Carro esportivo azul com cobertura de seguro total">
-            <img src="img/gal2.jpg" alt="Veículo SUV branco rodando em estrada segura">
-            <img src="img/gal3.jpg" alt="Pickup off-road protegida por seguro automotivo">
+            <img src="img/gal1.jpg">
+            <img src="img/gal2.jpg">
+            <img src="img/gal3.jpg">
         </div>
 
-        <button class="carousel-btn next" aria-label="Próximo slide">›</button>
+        <button class="carousel-btn next">›</button>
     </div>
 </section>
 
@@ -103,8 +90,7 @@
 <section class="reviews-section wrap reveal">
     <h2>Depoimentos</h2>
 
-    <div id="reviewsContainer" class="reviews">
-    </div>
+    <div id="reviewsContainer" class="reviews"></div>
     
     <div class="add-review-container">
         <h3>Deixe seu depoimento</h3>
@@ -112,32 +98,27 @@
             <input type="hidden" id="scriptIdReview" value="https://script.google.com/macros/s/AKfycbz4roFwVfPzK4KtU7-SLThPE5rpPiX9MmhhWc4eefSWjktURl8-MxrdJ-0GwX6UITQN1w/exec">
 
             <label for="rName">Seu Nome</label>
-            <input id="rName" type="text" placeholder="Seu nome" required>
+            <input id="rName" type="text" required>
 
             <label for="rEmailReview">Seu E-mail</label>
-            <input id="rEmailReview" type="email" placeholder="seu.email@exemplo.com" required>
+            <input id="rEmailReview" type="email" required>
 
-            <label>Sua Avaliação (Estrelas)</label>
-            <div class="star-rating" role="radiogroup" aria-label="Avaliação em estrelas">
-                <input type="radio" id="star5" name="rating" value="5" required aria-label="5 estrelas">
-                <label for="star5" title="5 estrelas">★</label>
-                <input type="radio" id="star4" name="rating" value="4" aria-label="4 estrelas">
-                <label for="star4" title="4 estrelas">★</label>
-                <input type="radio" id="star3" name="rating" value="3" aria-label="3 estrelas">
-                <label for="star3" title="3 estrelas">★</label>
-                <input type="radio" id="star2" name="rating" value="2" aria-label="2 estrelas">
-                <label for="star2" title="2 estrelas">★</label>
-                <input type="radio" id="star1" name="rating" value="1" aria-label="1 estrela">
-                <label for="star1" title="1 estrela">★</label>
+            <label>Sua Avaliação</label>
+            <div class="star-rating">
+                <input type="radio" id="star5" name="rating" value="5" required><label for="star5">★</label>
+                <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+                <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
             </div>
 
-            <label for="rComment">Seu Comentário</label>
-            <textarea id="rComment" placeholder="Sua experiência" required></textarea>
+            <label for="rComment">Comentário</label>
+            <textarea id="rComment" required></textarea>
 
-            <button type="submit" class="btn btn-primary">Enviar Depoimento</button>
-            <p id="reviewFormStatus" style="text-align: center; color: var(--accent-1); margin-top: 10px;"></p>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+            <p id="reviewFormStatus"></p>
         </form>
-        <p class="review-disclaimer">Seu depoimento será enviado para moderação. Assim que for "Aprovado" na Planilha, ele será exibido publicamente para todos os clientes. Você receberá uma confirmação por e-mail.</p>
+        <p class="review-disclaimer">Seu depoimento será exibido após aprovação.</p>
     </div>
 </section>
 
@@ -147,71 +128,66 @@
 
     <form id="contactForm" class="contact-form">
         <input type="hidden" id="scriptId" value="AKfycbxZNMFb1irqYJeAguhDGvQAyY43DyB2YmjWFBGrQ9la9uT4kmkguJxPyM6DjjH10PYl">
-        
+
         <label for="cName">Nome completo</label>
-        <input id="cName" type="text" placeholder="Seu nome" required>
+        <input id="cName" required>
 
         <label for="cPhone">Telefone</label>
-        <input id="cPhone" type="tel" placeholder="(DDD) 00000-0000" required>
+        <input id="cPhone" type="tel" required>
 
         <label for="cMsg">Mensagem</label>
-        <textarea id="cMsg" placeholder="Descreva sua necessidade" required></textarea>
+        <textarea id="cMsg" required></textarea>
 
-        <button type="submit" class="btn btn-primary">Enviar Cotação</button>
-        <p id="quoteFormStatus" style="text-align: center; color: var(--accent-1); margin-top: 10px;"></p>
+        <button class="btn btn-primary">Enviar</button>
+        <p id="quoteFormStatus"></p>
     </form>
 </section>
 
 
-<a href="https://wa.me/5521997882718?text=Olá, quero uma cotação!"
-   target="_blank"
-   rel="noopener"
-   class="fab-whats"
-   aria-label="WhatsApp Flutuante">
-   💬
-</a>
-
+<a href="https://wa.me/5521997882718?text=Olá, quero uma cotação!" target="_blank" class="fab-whats">💬</a>
 
 <footer class="footer wrap reveal">
     <p>© 2026 ZEN Seguros - Todos os direitos reservados.</p>
 </footer>
 
-<div id="registerModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+<div id="registerModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
             <h3 id="modalTitle">Receba Ofertas Exclusivas!</h3>
-            <button class="modal-close-btn" aria-label="Fechar janela de cadastro">×</button>
+            <button class="modal-close-btn">×</button>
         </div>
-        
+
         <form id="registerForm" class="contact-form">
             <input type="hidden" id="scriptIdRegister" value="AKfycbzjMinrLzRcXii2RDDSPAig3IMCqYBAjsl_1sLzfN_-ZqfmIdgBtKs07sOPcNtlUYOv">
             
             <label for="rFName">Nome</label>
-            <input id="rFName" type="text" placeholder="Seu nome" required>
+            <input id="rFName" required>
 
             <label for="rLName">Sobrenome</label>
-            <input id="rLName" type="text" placeholder="Seu sobrenome" required>
+            <input id="rLName" required>
 
             <label for="rDOB">Data de Nascimento</label>
             <input id="rDOB" type="date" required>
-            
-            <label for="rPhone">Telefone</label>
-            <input id="rPhone" type="tel" placeholder="(DDD) 00000-0000" required>
-            <label for="rEmail">E-mail</label>
-            <input id="rEmail" type="email" placeholder="seu.email@exemplo.com" required>
 
-            <button type="submit" class="btn btn-primary">Cadastrar e Receber Ofertas</button>
-            <p id="registerFormStatus" style="text-align: center; color: var(--accent-1); margin-top: 10px;"></p>
+            <label for="rPhone">Telefone</label>
+            <input id="rPhone" required>
+
+            <label for="rEmail">E-mail</label>
+            <input id="rEmail" type="email" required>
+
+            <button class="btn btn-primary">Cadastrar</button>
+            <p id="registerFormStatus"></p>
         </form>
-        <p class="review-disclaimer" style="margin-top: 15px;">Mantenha-se atualizado sobre seguros e promoções!</p>
     </div>
 </div>
+
 <script src="script.js" defer></script>
 
 <script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('service-worker.js');
-    }
+if ('serviceWorker' in navigator) {
+    // Usando sw.js (Se estiver no mesmo diretório)
+    navigator.serviceWorker.register('sw.js');
+}
 </script>
 
 </body>
