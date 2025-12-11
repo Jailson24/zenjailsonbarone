@@ -9,16 +9,16 @@
 
     <meta property="og:title" content="Seguro Automotivo • Proteção Total">
     <meta property="og:description" content="Seguro auto com assistência 24h e cobertura completa.">
-    <meta property="og:image" content="/img/logo.png">
+    <meta property="og:image" content="img/logo.png">
 
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="manifest.json">
 
-    <link rel="icon" href="/img/icon-192.png">
-    <link rel="apple-touch-icon" href="/img/icon-512.png">
+    <link rel="icon" href="img/icon-192.png">
+    <link rel="apple-touch-icon" href="img/icon-512.png">
 
-    <link rel="stylesheet" href="/styles.css">
-    <link rel="preload" href="/styles.css" as="style">
-    <link rel="preload" href="/script.js" as="script">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="script.js" as="script">
 </head>
 
 <body>
@@ -26,7 +26,7 @@
 <header class="header wrap" role="banner">
     <div class="brand">
         <div class="logo">
-            <img src="/img/logo.png" alt="Logo">
+            <img src="img/logo.png" alt="Logo">
         </div>
         <div class="title">
             <h1>ZEN Seguros</h1>
@@ -45,7 +45,7 @@
 
 <section class="hero wrap reveal">
     <div class="hero-video" id="ytLazy">
-        <img src="/img/thumbnail.jpg" class="yt-thumb">
+        <img src="img/thumbnail.jpg" class="yt-thumb">
         <div class="yt-play"></div>
     </div>
 
@@ -78,9 +78,9 @@
         <button class="carousel-btn prev">‹</button>
 
         <div class="carousel-track">
-            <img src="/img/gal1.jpg">
-            <img src="/img/gal2.jpg">
-            <img src="/img/gal3.jpg">
+            <img src="img/gal1.jpg">
+            <img src="img/gal2.jpg">
+            <img src="img/gal3.jpg">
         </div>
 
         <button class="carousel-btn next">›</button>
@@ -182,12 +182,12 @@
     </div>
 </div>
 
-<script src="/script.js" defer></script>
+<script src="script.js" defer></script>
 
 <script>
 if ('serviceWorker' in navigator) {
-    // Usando sw.js (Certifique-se que o caminho está correto)
-    navigator.serviceWorker.register('/sw.js');
+    // CORREÇÃO: Usamos o caminho relativo puro, mas requer a limpeza de cache após a implantação
+    navigator.serviceWorker.register('sw.js'); 
 }
 </script>
 
