@@ -53,7 +53,8 @@
         document.addEventListener("DOMContentLoaded", () => {
             const yt = document.getElementById("ytLazy");
             const loadVideo = () => {
-                yt.innerHTML = `<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+                // SUBSTITUA 'SEU_VIDEO_ID_AQUI' PELO ID REAL DO SEU VÍDEO DO YOUTUBE
+                yt.innerHTML = `<iframe src="https://www.youtube.com/embed/SEU_VIDEO_ID_AQUI?autoplay=1"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen loading="lazy"></iframe>`;
             };
@@ -95,7 +96,7 @@
     <div class="add-review-container">
         <h3>Deixe seu depoimento</h3>
         <form id="addReviewForm" class="contact-form">
-            <input type="hidden" id="scriptIdReview" value="https://script.google.com/macros/s/AKfycbz4roFwVfPzK4KtU7-SLThPE5rpPiX9MmhhWc4eefSWjktURl8-MxrdJ-0GwX6UITQN1w/exec">
+            <input type="hidden" id="scriptIdReview" value="https://script.google.com/macros/s/AKfycbw2YtU6gP89HpcZo_rSJnZ42TbkEAOGmQk1ArQZ9jfEIaxPO_OiiE9NMdGNeGoDUvGe/exec">
 
             <label for="rName">Seu Nome</label>
             <input id="rName" type="text" required>
@@ -127,7 +128,7 @@
     <h2>Solicitar Cotação</h2>
 
     <form id="contactForm" class="contact-form">
-        <input type="hidden" id="scriptId" value="AKfycbxZNMFb1irqYJeAguhDGvQAyY43DyB2YmjWFBGrQ9la9uT4kmkguJxPyM6DjjH10PYl">
+        <input type="hidden" id="scriptId" value="https://script.google.com/macros/s/AKfycbw2YtU6gP89HpcZo_rSJnZ42TbkEAOGmQk1ArQZ9jfEIaxPO_OiiE9NMdGNeGoDUvGe/exec">
 
         <label for="cName">Nome completo</label>
         <input id="cName" required>
@@ -158,7 +159,7 @@
         </div>
 
         <form id="registerForm" class="contact-form">
-            <input type="hidden" id="scriptIdRegister" value="AKfycbzjMinrLzRcXii2RDDSPAig3IMCqYBAjsl_1sLzfN_-ZqfmIdgBtKs07sOPcNtlUYOv">
+            <input type="hidden" id="scriptIdRegister" value="https://script.google.com/macros/s/AKfycbw2YtU6gP89HpcZo_rSJnZ42TbkEAOGmQk1ArQZ9jfEIaxPO_OiiE9NMdGNeGoDUvGe/exec">
             
             <label for="rFName">Nome</label>
             <input id="rFName" required>
