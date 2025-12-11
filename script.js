@@ -167,7 +167,8 @@ async function loadReviewsFromBackend() {
     const scriptIdInput = document.getElementById("scriptIdReview");
     const container = document.getElementById('reviewsContainer');
     
-    if (!scriptIdInput || scriptIdInput.value.includes('COLE_AQUI')) {
+    // Verifica se o URL do Apps Script foi substituído
+    if (!scriptIdInput || scriptIdInput.value.includes('COLE_O_SEU_URL_DE_IMPLANTAÇÃO_GAS_AQUI')) {
         container.innerHTML = `<p style="color:red; text-align:center;">⚠️ **ATENÇÃO:** Configure a URL do Apps Script no index.html para carregar os depoimentos.</p>`;
         return; 
     }
@@ -208,7 +209,7 @@ async function loadReviewsFromBackend() {
    5) FORMULÁRIOS — Envio para Apps Script (POST)
 ============================================================ */
 
-const SCRIPT_ID_PLACEHOLDER = "AKfycbxZNMFb1irqYJeAguhDGvQAyY43DyB2YmjWFBGrQ9la9uT4kmkguJxPyM6DjjH10PYl";
+const SCRIPT_ID_PLACEHOLDER = "COLE_O_SEU_URL_DE_IMPLANTAÇÃO_GAS_AQUI";
 
 // Função utilitária para enviar dados via fetch
 async function sendFormData(data, formType, statusElement, form) {
@@ -218,10 +219,10 @@ async function sendFormData(data, formType, statusElement, form) {
     } else if (formType === 'register') {
         scriptIdInput = document.getElementById("scriptIdRegister");
     } else {
-        scriptIdInput = document.getElementById("scriptId");
+        scriptIdInput = document.getElementById("scriptId"); // quote
     }
 
-    if (!scriptIdInput || scriptIdInput.value.includes('COLE_AQUI')) {
+    if (!scriptIdInput || scriptIdInput.value.includes(SCRIPT_ID_PLACEHOLDER)) {
         statusElement.style.color = 'red';
         statusElement.textContent = `❌ Erro: Por favor, substitua o texto no input hidden do formulário pela URL do Apps Script.`;
         return;
@@ -240,24 +241,28 @@ async function sendFormData(data, formType, statusElement, form) {
     try {
         const response = await fetch(SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors', 
+            // O Apps Script já lida com o CORS corretamente
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: formData
         });
 
+        // O sucesso no fetch indica que o Apps Script recebeu a requisição e está processando os e-mails/planilha.
         statusElement.style.color = 'green';
         if (formType === 'quote') {
-            statusElement.textContent = "✅ Cotação enviada com sucesso por e-mail! Entraremos em contato.";
+            statusElement.textContent = "✅ Cotação enviada com sucesso! Entraremos em contato o mais breve possível.";
         } else if (formType === 'review') {
-            statusElement.textContent = "✅ Depoimento enviado! Você receberá um e-mail de confirmação. Após a aprovação manual, ele aparecerá no site.";
+            statusElement.textContent = "✅ Depoimento enviado! Você receberá um e-mail de confirmação. Ele aparecerá no site após a aprovação manual.";
         } else if (formType === 'register') {
             statusElement.textContent = "✅ Cadastro realizado com sucesso! Em breve você receberá novidades.";
             // Fechar o modal após sucesso no cadastro
             setTimeout(() => {
-                document.getElementById('registerModal').classList.remove('is-open');
-                document.body.style.overflow = '';
+                const modal = document.getElementById('registerModal');
+                if(modal) {
+                   modal.classList.remove('is-open');
+                   document.body.style.overflow = '';
+                }
             }, 1500); 
         }
         form.reset();
@@ -265,7 +270,7 @@ async function sendFormData(data, formType, statusElement, form) {
     } catch (error) {
         console.error('Erro ao enviar formulário:', error);
         statusElement.style.color = 'red';
-        statusElement.textContent = "❌ Erro ao enviar. Tente novamente ou verifique a conexão.";
+        statusElement.textContent = "❌ Erro ao enviar. Tente novamente ou verifique a conexão com o servidor.";
     }
 }
 
