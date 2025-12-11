@@ -185,7 +185,7 @@ async function loadReviewsFromBackend() {
             reviews = JSON.parse(text);
         } catch (e) {
             console.error("Erro ao parsear JSON. Resposta do Apps Script:", text);
-            container.innerHTML = `<p style="color:red; text-align:center;">Erro na comunicação com o servidor de depoimentos. Verifique a implantação do Apps Script.</p>`;
+            container.innerHTML = `<p style="color:red; text-align:center;">Erro na comunicação com o servidor de depoimentos. Verifique a implantação do Apps Script (GET/CORS).</p>`;
             return;
         }
 
