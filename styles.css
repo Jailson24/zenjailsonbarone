@@ -1,396 +1,113 @@
-/* ============================================================
-   SCRIPT.JS — Código atualizado e otimizado
-   - Implementação real de Back-end com Apps Script (GET/POST)
-============================================================ */
+/* styles.css - versão substituta funcional para ZEN Seguros */
 
-/* ============================================================
-   1) TEMA ESCURO/CLARO
-============================================================ */
-function initTheme() {
-    const toggle = document.getElementById("themeToggle");
+/* Reset simples */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html,body { height: 100%; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+img { max-width: 100%; display: block; }
 
-    if (!toggle) return;
-
-    // Carrega o tema salvo
-    const saved = localStorage.getItem("theme");
-    const currentTheme = saved || document.documentElement.getAttribute("data-theme") || "dark";
-
-    document.documentElement.setAttribute("data-theme", currentTheme);
-    toggle.setAttribute("aria-pressed", currentTheme === "light");
-    toggle.textContent = currentTheme === "light" ? "☀️" : "🌙";
-
-    // Clique no botão
-    toggle.addEventListener("click", () => {
-        const isLight = document.documentElement.getAttribute("data-theme") === "light";
-        const newTheme = isLight ? "dark" : "light";
-
-        document.documentElement.setAttribute("data-theme", newTheme);
-        localStorage.setItem("theme", newTheme);
-
-        toggle.setAttribute("aria-pressed", newTheme === "light");
-        toggle.textContent = newTheme === "light" ? "☀️" : "🌙";
-    });
+/* Variáveis de tema */
+:root {
+  --bg: #fff;
+  --text: #071126;
+  --muted: #6b7280;
+  --accent-1: #2a86ff;
+  --card: #f8fafc;
+  --glass: rgba(255,255,255,0.6);
+}
+[data-theme="dark"] {
+  --bg: #061325;
+  --text: #e6eef9;
+  --muted: #97a6bf;
+  --accent-1: #2a86ff;
+  --card: #072033;
+  --glass: rgba(10,20,30,0.5);
 }
 
-/* ============================================================
-   2) SCROLL REVEAL — efeito suave e inteligente
-============================================================ */
-function initScrollReveal() {
-    const els = document.querySelectorAll(".reveal");
-
-    const observer = new IntersectionObserver(
-        (entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add("visible");
-                    observer.unobserve(entry.target);
-                }
-            });
-        },
-        {
-            threshold: 0.15,
-            rootMargin: "0px 0px -10% 0px"
-        }
-    );
-
-    els.forEach((el) => observer.observe(el));
+body {
+  background: linear-gradient(180deg,var(--bg),var(--card));
+  color: var(--text);
+  -webkit-font-smoothing:antialiased;
+  line-height: 1.45;
 }
 
-/* ============================================================
-   3) CARROSSEL — profissional, suave, responsivo
-============================================================ */
-function initCarousel() {
-    const track = document.querySelector(".carousel-track");
-    if (!track) return;
+/* Layout wrapper */
+.wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
 
-    const prev = document.querySelector(".carousel-btn.prev");
-    const next = document.querySelector(".carousel-btn.next");
-    const slides = [...track.children];
+/* Header */
+.header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:18px 0;
+}
+.brand { display:flex; gap:14px; align-items:center; }
+.logo img { width:120px; height:auto; border-radius:12px; object-fit:contain; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.12)); }
+.title h1 { font-size:20px; line-height:1; font-weight:700; }
+.title h2 { font-size:14px; color:var(--muted); margin-top:4px; font-weight:600; }
+.muted { color:var(--muted); font-size:13px; }
 
-    let index = 0;
+/* header stack (small screens) */
+.header.is-stack { flex-direction:column; align-items:flex-start; gap:12px; }
 
-    function update() {
-        const container = track.parentElement;
-        const slideWidth = slides[0].offsetWidth;
-        const gap = 20; 
+/* header actions */
+.header-actions { display:flex; gap:10px; align-items:center; }
+.icon-btn { background:transparent; border:1px solid rgba(0,0,0,0.06); padding:8px 10px; border-radius:8px; cursor:pointer; }
+.btn { padding:10px 14px; border-radius:10px; border:none; cursor:pointer; background:transparent; }
+.btn-primary { background:var(--accent-1); color:white; box-shadow:0 6px 18px rgba(42,134,255,0.18); }
 
-        const scrollAmount = (slideWidth + gap) * index;
-        
-        container.scroll({
-            left: scrollAmount,
-            behavior: 'smooth'
-        });
-    }
+/* Hero */
+.hero { display:grid; grid-template-columns: 1fr 1fr; gap:24px; align-items:center; padding:30px 0; }
+.hero-video { position:relative; cursor:pointer; border-radius:12px; overflow:hidden; background:var(--card); min-height:220px; display:flex; align-items:center; justify-content:center; }
+.yt-thumb { width:100%; height:100%; object-fit:cover; opacity:0.95; }
+.yt-play { position:absolute; width:80px; height:80px; border-radius:50%; background:rgba(0,0,0,0.35); display:flex; align-items:center; justify-content:center; color:white; font-size:30px; }
+.hero-text h2 { font-size:26px; margin-bottom:8px; }
+.hero-text p { color:var(--muted); margin-bottom:14px; }
 
-    next.addEventListener("click", () => {
-        index = (index + 1) % slides.length;
-        update();
-    });
+/* Carousel */
+.carousel-section h2{ margin-bottom:12px; }
+.carousel { display:flex; align-items:center; gap:8px; }
+.carousel-track { display:flex; overflow:hidden; scroll-behavior:smooth; gap:20px; padding:12px 6px; }
+.carousel-track img { width:260px; height:150px; object-fit:cover; border-radius:10px; }
+.carousel-btn { background:transparent; border:none; font-size:28px; cursor:pointer; }
 
-    prev.addEventListener("click", () => {
-        index = (index - 1 + slides.length) % slides.length;
-        update();
-    });
+/* Reviews */
+.reviews-section { padding:18px 0; }
+.reviews { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap:16px; margin-top:12px; }
+.review { background:var(--card); padding:14px; border-radius:10px; box-shadow:0 6px 18px rgba(0,0,0,0.04); }
+.stars { font-size:18px; color: #d1d5db; margin:8px 0; }
+.stars[data-rating="5"]{ color: gold; }
+.review .author { font-weight:600; font-size:13px; color:var(--muted); }
 
-    // Auto-play (opcional)
-    setInterval(() => {
-        index = (index + 1) % slides.length;
-        update();
-    }, 4500);
+/* Forms */
+.contact-form { display:flex; flex-direction:column; gap:8px; margin-top:12px; }
+.contact-form input, .contact-form textarea {
+  padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); background:transparent; color:var(--text);
+}
+.contact-form button { margin-top:6px; align-self:flex-start; }
+.star-rating { display:flex; gap:6px; font-size:20px; }
 
-    window.addEventListener("resize", update);
-    setTimeout(update, 100); 
+/* Floating WhatsApp button */
+.fab-whats {
+  position:fixed; right:18px; bottom:22px; z-index:999;
+  display:inline-flex; align-items:center; justify-content:center; width:56px; height:56px; border-radius:50%;
+  background:linear-gradient(180deg,var(--accent-1),#1f6fe0); color:white; font-size:24px; text-decoration:none;
+  box-shadow:0 10px 30px rgba(42,134,255,0.18);
 }
 
-/* ============================================================
-   4) HEADER INTELIGENTE — evita quebra do botão WhatsApp
-============================================================ */
-function initSmartHeader() {
-    const header = document.querySelector(".header");
-    const actions = document.querySelector(".header-actions");
-    const brand = document.querySelector(".brand");
+/* Footer */
+.footer { margin-top:40px; padding:20px 0; text-align:center; color:var(--muted); }
 
-    if (!header || !actions || !brand) return;
+/* Modal */
+.modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(6,19,37,0.5); z-index:1000; }
+.modal.is-open { display:flex; }
+.modal-content { background:var(--card); border-radius:12px; padding:18px; max-width:520px; width:90%; box-shadow:0 12px 40px rgba(0,0,0,0.25); }
+.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
 
-    function checkOverflow() {
-        const W = header.clientWidth;
-        const brandW = brand.clientWidth;
-        const actionsW = actions.clientWidth;
-
-        if (brandW + actionsW > W * 0.85) { 
-            header.classList.add("is-stack");
-        } else {
-            header.classList.remove("is-stack");
-        }
-    }
-
-    window.addEventListener("resize", checkOverflow);
-    setTimeout(checkOverflow, 100);
+/* small screens */
+@media (max-width:880px) {
+  .hero { grid-template-columns: 1fr; }
+  .logo img { width:92px; }
+  .carousel-track img { width:200px; height:120px; }
+  .header { padding:12px 0; }
 }
-
-
-/* ============================================================
-   FUNÇÕES DE RENDERIZAÇÃO E CARREGAMENTO DE DEPOIMENTOS
-============================================================ */
-
-function renderStars(rating) {
-    // Retorna 5 estrelas sólidas. O CSS do .stars usa o atributo data-rating para colorir de ouro
-    return '★'.repeat(5); 
-}
-
-function renderReview(review) {
-    const container = document.getElementById('reviewsContainer');
-    if (!container) return;
-
-    const starsHtml = renderStars(review.rating); 
-
-    const reviewHtml = `
-        <div class="review visible">
-            <p>"${review.comment}"</p>
-            <div class="stars" data-rating="${review.rating}">${starsHtml}</div>
-            <span class="author">— ${review.name}</span>
-        </div>
-    `;
-
-    // Adiciona o depoimento no início do contêiner (mais novos primeiro)
-    container.insertAdjacentHTML('afterbegin', reviewHtml);
-    
-    // Aciona a animação de reveal
-    const newReviewEl = container.firstElementChild;
-    if (newReviewEl) {
-        newReviewEl.classList.add('visible');
-    }
-}
-
-// NOVO: Função para carregar depoimentos do Apps Script (GET)
-async function loadReviewsFromBackend() {
-    const scriptIdInput = document.getElementById("scriptIdReview");
-    const container = document.getElementById('reviewsContainer');
-    
-    // Verifica se o URL do Apps Script foi substituído
-    if (!scriptIdInput || scriptIdInput.value.includes('COLE_O_SEU_URL_DE_IMPLANTAÇÃO_GAS_AQUI')) {
-        container.innerHTML = `<p style="color:red; text-align:center;">⚠️ **ATENÇÃO:** Configure a URL do Apps Script no index.html para carregar os depoimentos.</p>`;
-        return; 
-    }
-    
-    const SCRIPT_URL = scriptIdInput.value;
-    container.innerHTML = '<p style="text-align:center; opacity:0.7;">Carregando depoimentos...</p>';
-
-    try {
-        const response = await fetch(SCRIPT_URL, { method: 'GET' });
-        
-        const text = await response.text(); 
-        
-        let reviews;
-        try {
-            reviews = JSON.parse(text);
-        } catch (e) {
-            console.error("Erro ao parsear JSON. Resposta do Apps Script:", text);
-            container.innerHTML = `<p style="color:red; text-align:center;">Erro na comunicação com o servidor de depoimentos. Verifique a implantação do Apps Script (GET/CORS).</p>`;
-            return;
-        }
-
-        container.innerHTML = '';
-        if (reviews.length === 0) {
-            container.innerHTML = `<p style="text-align:center; opacity:0.7;">Seja o primeiro a deixar um depoimento!</p>`;
-            return;
-        }
-
-        reviews.forEach(review => renderReview(review));
-        
-    } catch (error) {
-        console.error('Erro ao carregar depoimentos do Apps Script:', error);
-        container.innerHTML = `<p style="color:red; text-align:center;">Erro ao carregar depoimentos. Verifique a conexão.</p>`;
-    }
-}
-
-
-/* ============================================================
-   5) FORMULÁRIOS — Envio para Apps Script (POST)
-============================================================ */
-
-const SCRIPT_ID_PLACEHOLDER = "COLE_O_SEU_URL_DE_IMPLANTAÇÃO_GAS_AQUI";
-
-// Função utilitária para enviar dados via fetch
-async function sendFormData(data, formType, statusElement, form) {
-    let scriptIdInput;
-    if (formType === 'review') {
-        scriptIdInput = document.getElementById("scriptIdReview");
-    } else if (formType === 'register') {
-        scriptIdInput = document.getElementById("scriptIdRegister");
-    } else {
-        scriptIdInput = document.getElementById("scriptId"); // quote
-    }
-
-    if (!scriptIdInput || scriptIdInput.value.includes(SCRIPT_ID_PLACEHOLDER)) {
-        statusElement.style.color = 'red';
-        statusElement.textContent = `❌ Erro: Por favor, substitua o texto no input hidden do formulário pela URL do Apps Script.`;
-        return;
-    }
-    
-    statusElement.textContent = "Enviando...";
-    statusElement.style.color = 'var(--accent-1)';
-
-    const SCRIPT_URL = scriptIdInput.value;
-
-    const formData = new URLSearchParams({
-        formType: formType,
-        ...data
-    });
-
-    try {
-        const response = await fetch(SCRIPT_URL, {
-            method: 'POST',
-            // O Apps Script já lida com o CORS corretamente
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: formData
-        });
-
-        // O sucesso no fetch indica que o Apps Script recebeu a requisição e está processando os e-mails/planilha.
-        statusElement.style.color = 'green';
-        if (formType === 'quote') {
-            statusElement.textContent = "✅ Cotação enviada com sucesso! Entraremos em contato o mais breve possível.";
-        } else if (formType === 'review') {
-            statusElement.textContent = "✅ Depoimento enviado! Você receberá um e-mail de confirmação. Ele aparecerá no site após a aprovação manual.";
-        } else if (formType === 'register') {
-            statusElement.textContent = "✅ Cadastro realizado com sucesso! Em breve você receberá novidades.";
-            // Fechar o modal após sucesso no cadastro
-            setTimeout(() => {
-                const modal = document.getElementById('registerModal');
-                if(modal) {
-                   modal.classList.remove('is-open');
-                   document.body.style.overflow = '';
-                }
-            }, 1500); 
-        }
-        form.reset();
-
-    } catch (error) {
-        console.error('Erro ao enviar formulário:', error);
-        statusElement.style.color = 'red';
-        statusElement.textContent = "❌ Erro ao enviar. Tente novamente ou verifique a conexão com o servidor.";
-    }
-}
-
-// Inicializa o Formulário de Cotação
-function initQuoteForm() {
-    const form = document.getElementById("contactForm");
-    const status = document.getElementById("quoteFormStatus");
-    if (!form || !status) return;
-
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        const data = {
-            cName: document.getElementById("cName").value.trim(),
-            cPhone: document.getElementById("cPhone").value.trim(),
-            cMsg: document.getElementById("cMsg").value.trim()
-        };
-
-        sendFormData(data, 'quote', status, form);
-    });
-}
-
-// Inicializa o Formulário de Depoimentos
-function initReviewForm() {
-    const form = document.getElementById("addReviewForm");
-    const status = document.getElementById("reviewFormStatus");
-    if (!form || !status) return;
-
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        const rating = form.querySelector('input[name="rating"]:checked');
-        
-        const data = {
-            rName: document.getElementById("rName").value.trim(),
-            rEmailReview: document.getElementById("rEmailReview").value.trim(), 
-            rRating: rating ? rating.value : '0', 
-            rComment: document.getElementById("rComment").value.trim()
-        };
-
-        sendFormData(data, 'review', status, form);
-    });
-}
-
-/* ============================================================
-   6) FORMULÁRIO DE CADASTRO (DENTRO DO MODAL)
-============================================================ */
-function initRegisterForm() {
-    const form = document.getElementById("registerForm");
-    const status = document.getElementById("registerFormStatus");
-    if (!form || !status) return;
-
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        const data = {
-            rFName: document.getElementById("rFName").value.trim(),
-            rLName: document.getElementById("rLName").value.trim(),
-            rDOB: document.getElementById("rDOB").value.trim(), 
-            rPhone: document.getElementById("rPhone").value.trim(), 
-            rEmail: document.getElementById("rEmail").value.trim()
-        };
-
-        sendFormData(data, 'register', status, form);
-    });
-}
-
-
-/* ============================================================
-   7) LÓGICA DO POP-UP MODAL
-============================================================ */
-function initModal() {
-    const modal = document.getElementById('registerModal');
-    const openBtn = document.getElementById('openRegisterModal');
-    const closeBtn = modal ? modal.querySelector('.modal-close-btn') : null;
-
-    if (!modal || !openBtn || !closeBtn) return;
-
-    const openModal = () => {
-        modal.classList.add('is-open');
-        document.body.style.overflow = 'hidden';
-    };
-
-    const closeModal = () => {
-        modal.classList.remove('is-open');
-        document.body.style.overflow = '';
-    };
-
-    openBtn.addEventListener('click', openModal);
-    closeBtn.addEventListener('click', closeModal);
-
-    // Fechar ao clicar fora do modal
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
-
-    // Fechar com a tecla ESC
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal.classList.contains('is-open')) {
-            closeModal();
-        }
-    });
-}
-
-
-/* ============================================================
-   EXECUÇÃO GERAL
-============================================================ */
-document.addEventListener("DOMContentLoaded", () => {
-    initTheme();
-    initScrollReveal();
-    initCarousel();
-    initSmartHeader();
-    initQuoteForm(); 
-    initReviewForm(); 
-    initRegisterForm(); 
-    initModal();
-    
-    // CARREGA OS DEPOIMENTOS PERMANENTES DO BACKEND
-    loadReviewsFromBackend(); 
-});
