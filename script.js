@@ -72,18 +72,13 @@ function initCarousel() {
     function update() {
         if (slides.length === 0) return;
         
-        // CORREÇÃO CRÍTICA PARA RESPONSIVIDADE:
-        
-        // 1. Obtém a posição esquerda do slide que deve ser alinhado.
-        const targetSlide = slides[index];
-        const targetOffsetLeft = targetSlide.offsetLeft; // Posição em relação ao track
-        
-        // 2. O gap (espaçamento) é de 20px no CSS. Subtraímos (index * 20) 
-        // para garantir que o primeiro slide (index 0) comece exatamente em 0,
-        // mas os slides seguintes considerem o gap.
+        // CORRIGIDO: Calculamos a largura do primeiro slide + o GAP (20px)
+        const slideWidth = slides[0].offsetWidth; 
         const gap = 20; 
-        const translateAmount = targetOffsetLeft - (index * gap); 
-
+        
+        // Calculamos a distância total do movimento translateX
+        const translateAmount = (slideWidth + gap) * index;
+        
         // Move o carrossel usando transform
         track.style.transform = `translateX(-${translateAmount}px)`;
     }
