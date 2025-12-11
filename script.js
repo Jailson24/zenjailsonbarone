@@ -1,6 +1,5 @@
 /* ============================================================
    SCRIPT.JS — Código atualizado e otimizado
-   - Implementação real de Back-end com Apps Script (GET/POST)
 ============================================================ */
 
 /* ============================================================
@@ -57,7 +56,7 @@ function initScrollReveal() {
 }
 
 /* ============================================================
-   3) CARROSSEL — profissional, suave, responsivo
+   3) CARROSSEL — profissional, suave, responsivo e AUTOMÁTICO (CORRIGIDO)
 ============================================================ */
 function initCarousel() {
     const track = document.querySelector(".carousel-track");
@@ -66,38 +65,46 @@ function initCarousel() {
     const prev = document.querySelector(".carousel-btn.prev");
     const next = document.querySelector(".carousel-btn.next");
     const slides = [...track.children];
+    const totalSlides = slides.length;
 
     let index = 0;
 
     function update() {
-        const container = track.parentElement;
-        const slideWidth = slides[0].offsetWidth;
-        const gap = 20; 
-
-        const scrollAmount = (slideWidth + gap) * index;
+        if (slides.length === 0) return;
         
-        container.scroll({
-            left: scrollAmount,
-            behavior: 'smooth'
+        // CORRIGIDO: Calculamos a largura do primeiro slide + o GAP (20px)
+        const slideWidth = slides[0].offsetWidth; 
+        const gap = 20; 
+        
+        // Calculamos a distância total do movimento translateX
+        const translateAmount = (slideWidth + gap) * index;
+        
+        // Move o carrossel usando transform
+        track.style.transform = `translateX(-${translateAmount}px)`;
+    }
+
+    // Navegação Manual (prev/next)
+    if (next && prev) {
+        next.addEventListener("click", () => {
+            // Avança e faz loop (0, 1, 2, 0, 1, ...)
+            index = (index + 1) % totalSlides; 
+            update();
+        });
+
+        prev.addEventListener("click", () => {
+            // Retrocede e faz loop (2, 1, 0, 2, 1, ...)
+            index = (index - 1 + totalSlides) % totalSlides;
+            update();
         });
     }
 
-    next.addEventListener("click", () => {
-        index = (index + 1) % slides.length;
-        update();
-    });
-
-    prev.addEventListener("click", () => {
-        index = (index - 1 + slides.length) % slides.length;
-        update();
-    });
-
-    // Auto-play (opcional)
+    // Auto-play: Garante que o índice avance e volte ao 0.
     setInterval(() => {
-        index = (index + 1) % slides.length;
+        index = (index + 1) % totalSlides;
         update();
-    }, 4500);
+    }, 4500); // Passa a cada 4.5 segundos
 
+    // Inicializa na primeira carga e recalcula ao redimensionar
     window.addEventListener("resize", update);
     setTimeout(update, 100); 
 }
@@ -167,9 +174,9 @@ async function loadReviewsFromBackend() {
     const scriptIdInput = document.getElementById("scriptIdReview");
     const container = document.getElementById('reviewsContainer');
     
-    // Verifica se o URL do Apps Script foi substituído
-    if (!scriptIdInput || scriptIdInput.value.includes('COLE_O_SEU_URL_DE_IMPLANTAÇÃO_GAS_AQUI')) {
-        container.innerHTML = `<p style="color:red; text-align:center;">⚠️ **ATENÇÃO:** Configure a URL do Apps Script no index.html para carregar os depoimentos.</p>`;
+    // Alerta se a URL não for alterada
+    if (!scriptIdInput || !scriptIdInput.value.startsWith('https://script.google.com/')) {
+        container.innerHTML = `<p style="color:red; text-align:center;">⚠️ **ATENÇÃO:** Configure a URL de implantação 'doGet' do Apps Script no index.html para carregar os depoimentos.</p>`;
         return; 
     }
     
@@ -179,28 +186,28 @@ async function loadReviewsFromBackend() {
     try {
         const response = await fetch(SCRIPT_URL, { method: 'GET' });
         
-        const text = await response.text(); 
-        
-        let reviews;
-        try {
-            reviews = JSON.parse(text);
-        } catch (e) {
-            console.error("Erro ao parsear JSON. Resposta do Apps Script:", text);
-            container.innerHTML = `<p style="color:red; text-align:center;">Erro na comunicação com o servidor de depoimentos. Verifique a implantação do Apps Script (GET/CORS).</p>`;
-            return;
-        }
+        // CORRIGIDO: Usa response.json() para tratar o ContentService.MimeType.JSON
+        let reviews = await response.json(); 
 
         container.innerHTML = '';
+        
+        if (reviews.error) {
+            console.error("Erro do servidor Apps Script:", reviews.error);
+             container.innerHTML = `<p style="color:red; text-align:center;">Erro na comunicação com o servidor. Verifique o log do Apps Script.</p>`;
+             return;
+        }
+
         if (reviews.length === 0) {
             container.innerHTML = `<p style="text-align:center; opacity:0.7;">Seja o primeiro a deixar um depoimento!</p>`;
             return;
         }
 
-        reviews.forEach(review => renderReview(review));
+        // Exibe os depoimentos (inverte para mostrar os mais novos primeiro)
+        reviews.reverse().forEach(review => renderReview(review));
         
     } catch (error) {
         console.error('Erro ao carregar depoimentos do Apps Script:', error);
-        container.innerHTML = `<p style="color:red; text-align:center;">Erro ao carregar depoimentos. Verifique a conexão.</p>`;
+        container.innerHTML = `<p style="color:red; text-align:center;">Erro de rede/JSON. Certifique-se que o script está implantado como "Qualquer pessoa".</p>`;
     }
 }
 
@@ -208,8 +215,6 @@ async function loadReviewsFromBackend() {
 /* ============================================================
    5) FORMULÁRIOS — Envio para Apps Script (POST)
 ============================================================ */
-
-const SCRIPT_ID_PLACEHOLDER = "COLE_O_SEU_URL_DE_IMPLANTAÇÃO_GAS_AQUI";
 
 // Função utilitária para enviar dados via fetch
 async function sendFormData(data, formType, statusElement, form) {
@@ -219,10 +224,10 @@ async function sendFormData(data, formType, statusElement, form) {
     } else if (formType === 'register') {
         scriptIdInput = document.getElementById("scriptIdRegister");
     } else {
-        scriptIdInput = document.getElementById("scriptId"); // quote
+        scriptIdInput = document.getElementById("scriptId");
     }
 
-    if (!scriptIdInput || scriptIdInput.value.includes(SCRIPT_ID_PLACEHOLDER)) {
+    if (!scriptIdInput || !scriptIdInput.value.startsWith('https://script.google.com/')) {
         statusElement.style.color = 'red';
         statusElement.textContent = `❌ Erro: Por favor, substitua o texto no input hidden do formulário pela URL do Apps Script.`;
         return;
@@ -241,28 +246,24 @@ async function sendFormData(data, formType, statusElement, form) {
     try {
         const response = await fetch(SCRIPT_URL, {
             method: 'POST',
-            // O Apps Script já lida com o CORS corretamente
+            mode: 'no-cors', 
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: formData
         });
 
-        // O sucesso no fetch indica que o Apps Script recebeu a requisição e está processando os e-mails/planilha.
         statusElement.style.color = 'green';
         if (formType === 'quote') {
-            statusElement.textContent = "✅ Cotação enviada com sucesso! Entraremos em contato o mais breve possível.";
+            statusElement.textContent = "✅ Cotação enviada com sucesso por e-mail! Entraremos em contato.";
         } else if (formType === 'review') {
-            statusElement.textContent = "✅ Depoimento enviado! Você receberá um e-mail de confirmação. Ele aparecerá no site após a aprovação manual.";
+            statusElement.textContent = "✅ Depoimento enviado! Você receberá um e-mail de confirmação. Após a aprovação manual, ele aparecerá no site.";
         } else if (formType === 'register') {
             statusElement.textContent = "✅ Cadastro realizado com sucesso! Em breve você receberá novidades.";
             // Fechar o modal após sucesso no cadastro
             setTimeout(() => {
-                const modal = document.getElementById('registerModal');
-                if(modal) {
-                   modal.classList.remove('is-open');
-                   document.body.style.overflow = '';
-                }
+                document.getElementById('registerModal').classList.remove('is-open');
+                document.body.style.overflow = '';
             }, 1500); 
         }
         form.reset();
@@ -270,7 +271,7 @@ async function sendFormData(data, formType, statusElement, form) {
     } catch (error) {
         console.error('Erro ao enviar formulário:', error);
         statusElement.style.color = 'red';
-        statusElement.textContent = "❌ Erro ao enviar. Tente novamente ou verifique a conexão com o servidor.";
+        statusElement.textContent = "❌ Erro ao enviar. Tente novamente ou verifique a conexão.";
     }
 }
 

@@ -1,113 +1,675 @@
-/* styles.css - versão substituta funcional para ZEN Seguros */
-
-/* Reset simples */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html,body { height: 100%; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
-img { max-width: 100%; display: block; }
-
-/* Variáveis de tema */
+/* ============================================================
+   ROOT / VARIÁVEIS • Tema moderno azul
+============================================================ */
 :root {
-  --bg: #fff;
-  --text: #071126;
-  --muted: #6b7280;
-  --accent-1: #2a86ff;
-  --card: #f8fafc;
-  --glass: rgba(255,255,255,0.6);
+    --bg:#061325;
+    --bg-2:#07182a;
+    --card:#0e2a4a;
+    --muted:rgba(234,243,255,0.92);
+
+    --accent-1:#2a86ff;
+    --accent-2:#1f67d4;
+    --accent-glow:rgba(42, 134, 255, 0.4); 
+
+    --glass:rgba(255,255,255,0.03);
+    --heading-color: #eaf4ff;
+
+    --radius:16px;
+    --shadow-lg:0 24px 60px rgba(2,18,40,0.6);
+    --ease:cubic-bezier(.2,.9,.25,1);
+
+    --focus-color:#2a86ff;
+    --font-family-base: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
-[data-theme="dark"] {
-  --bg: #061325;
-  --text: #e6eef9;
-  --muted: #97a6bf;
-  --accent-1: #2a86ff;
-  --card: #072033;
-  --glass: rgba(10,20,30,0.5);
+
+/* LIGHT MODE */
+[data-theme="light"] {
+    --bg:#f6fbff;
+    --bg-2:#eaf4ff;
+    --card:#ffffff;
+    --muted:#0b2a4a;
+    --glass:rgba(11,42,74,0.03);
+    --accent-glow:rgba(42, 134, 255, 0.2); 
+    --heading-color: #061325;
 }
+
+/* ============================================================
+   RESET / BASE
+============================================================ */
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+html { scroll-behavior: smooth; }
 
 body {
-  background: linear-gradient(180deg,var(--bg),var(--card));
-  color: var(--text);
-  -webkit-font-smoothing:antialiased;
-  line-height: 1.45;
+    font-family: var(--font-family-base);
+    line-height: 1.6;
+    margin: 0;
+    background:
+        radial-gradient(1200px 400px at 10% 10%, rgba(48,103,255,0.06), transparent),
+        linear-gradient(180deg, var(--bg), var(--bg-2));
+    color: var(--muted);
+    -webkit-font-smoothing: antialiased;
 }
 
-/* Layout wrapper */
-.wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
+/* Títulos */
+h1, h2, h3, .main-title {
+    color: var(--heading-color);
+    line-height: 1.2;
+    font-weight: 800;
+}
 
-/* Header */
+h2 {
+    font-size: clamp(24px, 5vw, 40px);
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+
+/* CONTAINER PRINCIPAL */
+.wrap {
+    max-width: 1150px;
+    margin: 40px auto;
+    padding: 22px;
+    display: grid;
+    gap: 26px;
+}
+
+/* ============================================================
+   HEADER • Correção WhatsApp + Responsividade + Acessibilidade
+============================================================ */
 .header {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
-  padding:18px 0;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
 }
-.brand { display:flex; gap:14px; align-items:center; }
-.logo img { width:120px; height:auto; border-radius:12px; object-fit:contain; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.12)); }
-.title h1 { font-size:20px; line-height:1; font-weight:700; }
-.title h2 { font-size:14px; color:var(--muted); margin-top:4px; font-weight:600; }
-.muted { color:var(--muted); font-size:13px; }
 
-/* header stack (small screens) */
-.header.is-stack { flex-direction:column; align-items:flex-start; gap:12px; }
-
-/* header actions */
-.header-actions { display:flex; gap:10px; align-items:center; }
-.icon-btn { background:transparent; border:1px solid rgba(0,0,0,0.06); padding:8px 10px; border-radius:8px; cursor:pointer; }
-.btn { padding:10px 14px; border-radius:10px; border:none; cursor:pointer; background:transparent; }
-.btn-primary { background:var(--accent-1); color:white; box-shadow:0 6px 18px rgba(42,134,255,0.18); }
-
-/* Hero */
-.hero { display:grid; grid-template-columns: 1fr 1fr; gap:24px; align-items:center; padding:30px 0; }
-.hero-video { position:relative; cursor:pointer; border-radius:12px; overflow:hidden; background:var(--card); min-height:220px; display:flex; align-items:center; justify-content:center; }
-.yt-thumb { width:100%; height:100%; object-fit:cover; opacity:0.95; }
-.yt-play { position:absolute; width:80px; height:80px; border-radius:50%; background:rgba(0,0,0,0.35); display:flex; align-items:center; justify-content:center; color:white; font-size:30px; }
-.hero-text h2 { font-size:26px; margin-bottom:8px; }
-.hero-text p { color:var(--muted); margin-bottom:14px; }
-
-/* Carousel */
-.carousel-section h2{ margin-bottom:12px; }
-.carousel { display:flex; align-items:center; gap:8px; }
-.carousel-track { display:flex; overflow:hidden; scroll-behavior:smooth; gap:20px; padding:12px 6px; }
-.carousel-track img { width:260px; height:150px; object-fit:cover; border-radius:10px; }
-.carousel-btn { background:transparent; border:none; font-size:28px; cursor:pointer; }
-
-/* Reviews */
-.reviews-section { padding:18px 0; }
-.reviews { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap:16px; margin-top:12px; }
-.review { background:var(--card); padding:14px; border-radius:10px; box-shadow:0 6px 18px rgba(0,0,0,0.04); }
-.stars { font-size:18px; color: #d1d5db; margin:8px 0; }
-.stars[data-rating="5"]{ color: gold; }
-.review .author { font-weight:600; font-size:13px; color:var(--muted); }
-
-/* Forms */
-.contact-form { display:flex; flex-direction:column; gap:8px; margin-top:12px; }
-.contact-form input, .contact-form textarea {
-  padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); background:transparent; color:var(--text);
+/* Marca */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
 }
-.contact-form button { margin-top:6px; align-self:flex-start; }
-.star-rating { display:flex; gap:6px; font-size:20px; }
 
-/* Floating WhatsApp button */
+/* LOGO - EFEITO DE LUZ/MOVIMENTO APRIMORADO */
+.logo {
+    width: 88px;
+    height: 88px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 4px var(--accent-glow), var(--shadow-lg); 
+    animation: floaty 6s ease-in-out infinite;
+    transition: transform 0.3s var(--ease);
+}
+
+.logo img {
+    width: 68%;
+    height: 68%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 18px rgba(0,0,0,0.35));
+}
+
+.title {
+    min-width: 0;
+}
+
+.title .main-title {
+    margin: 0;
+    font-size: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 700;
+}
+
+.title h1 {
+    display: none;
+}
+
+.title h2 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0.8;
+    margin-top: 2px;
+}
+
+.title .muted {
+    display: none; 
+}
+
+
+/* Ações no header */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-actions > * {
+    flex: 0 0 auto !important;
+    min-width: 0;
+}
+
+/* Botão tema - Efeito de Glass aprimorado */
+.icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--glass);
+    border: 1px solid rgba(255,255,255,0.08);
+    cursor: pointer;
+    font-size: 18px;
+    backdrop-filter: blur(8px); 
+    transition: all 0.3s var(--ease);
+}
+
+.icon-btn:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+/* WhatsApp TOP — corrigido! */
+#whatsappTop {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    padding: 8px 14px;
+    height: 40px;
+    font-size: 14px;
+    border-radius: 12px;
+    white-space: nowrap;
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+    color: white;
+    text-decoration: none;
+    transition: .2s var(--ease);
+}
+
+/* Evita conflitos */
+.header .btn {
+    flex: 0 0 auto !important;
+}
+
+/* HEADER INTELIGENTE - NOVO CSS */
+.header.is-stack {
+    grid-template-columns: 1fr;
+    text-align: center;
+}
+
+.header.is-stack .brand,
+.header.is-stack .header-actions {
+    justify-content: center;
+}
+
+.header.is-stack .header-actions {
+    margin-top: 10px;
+}
+
+/* Media Query para telas menores */
+@media (max-width: 650px) {
+    .header {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .brand {
+        justify-content: center;
+        text-align: center;
+        gap: 8px;
+    }
+    .logo {
+        width: 70px;
+        height: 70px;
+        border-radius: 10px;
+        box-shadow: 0 0 0 3px var(--accent-glow), 0 10px 20px rgba(2,18,40,0.5);
+    }
+    .title .main-title {
+        font-size: 16px;
+    }
+    .title h2 {
+        font-size: 12px;
+    }
+    .title p.muted {
+        display: block;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+    .header-actions {
+        width: 100%;
+        justify-content: space-between;
+        padding: 0 10px;
+    }
+    #whatsappTop {
+        width: 100%;
+    }
+    .header-actions .icon-btn {
+        flex-grow: 0;
+    }
+}
+
+
+/* ============================================================
+   BOTÕES GERAIS
+============================================================ */
+.btn {
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    transition: transform .22s var(--ease), box-shadow .22s var(--ease);
+}
+
+/* BOTÃO PRIMARY - EFEITO DE MOVIMENTO/GLOW APRIMORADO */
+.btn-primary {
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+    color: #fff;
+    box-shadow: 0 12px 36px rgba(42,134,255,0.18);
+}
+
+.btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 18px 45px rgba(42,134,255,0.3); 
+}
+
+/* NOVO: Botão para abrir o Modal de Cadastro */
+#openRegisterModal {
+    background: var(--card); 
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--muted);
+}
+#openRegisterModal:hover {
+    background: var(--card);
+    box-shadow: 0 12px 36px rgba(2,18,40,0.6);
+}
+
+
+/* FOCO - EFEITO NEON GLOW */
+:focus-visible {
+    outline: 3px solid var(--focus-color);
+    outline-offset: 3px;
+    box-shadow: 0 0 10px var(--accent-glow);
+    border-radius: var(--radius); 
+}
+
+/* ============================================================
+   HERO (Lazy YouTube) - Ajuste de Layout
+============================================================ */
+.hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.hero-video {
+    position: relative;
+    width: 100%;
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+    aspect-ratio: 4 / 3;
+    background: #000;
+    transition: transform 0.4s var(--ease);
+}
+
+.hero-video:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+}
+
+.hero-video iframe {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border: none;
+}
+
+.yt-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.yt-play {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(5px); 
+    transition: all 0.3s ease;
+}
+
+.yt-play::after {
+    content: '▶';
+    color: white;
+    font-size: 64px;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.hero-video:hover .yt-play {
+    background: rgba(0,0,0,0.3);
+}
+
+.hero-text {
+    text-align: left; 
+}
+
+.hero-text h2 {
+    font-size: clamp(30px, 6vw, 52px);
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.hero-text p {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.hero-text .btn {
+    margin-right: 15px; 
+}
+
+@media (max-width: 900px) {
+    .hero {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    .hero-text {
+        order: -1; 
+        text-align: center;
+    }
+    .hero-text h2 {
+        text-align: center;
+    }
+    .hero-text .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+        margin-right: 0;
+    }
+}
+
+/* ============================================================
+   CARROSSEL (Ajustado para Transform/Translate)
+============================================================ */
+.carousel-section h2 {
+    margin-bottom: 14px;
+}
+
+.carousel {
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel-track {
+    display: flex;
+    gap: 20px;
+    transition: transform 0.6s var(--ease); /* Usamos TRANSFORME */
+}
+
+.carousel-track img {
+    /* Define a largura do slide para o JS calcular o transform X */
+    min-width: calc(90% - 20px); 
+    width: min-content; 
+    flex-shrink: 0; /* Impede que as imagens encolham */
+    
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transition: transform 0.3s var(--ease);
+}
+
+.carousel-track img:hover {
+    transform: scale(1.03); 
+}
+
+/* Responsividade de Largura (Desktop) */
+@media (min-width: 651px) {
+    .carousel-track img {
+        /* 3 slides + 2 gaps de 20px. Cálculo: (100% - 40px) / 3 */
+        min-width: calc(33.333% - 13.33px); 
+    }
+}
+
+/* BOTÕES - EFEITO GLASS + FOCUS GLOW */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--glass);
+    color: white;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    cursor: pointer;
+    border: none;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s var(--ease);
+    z-index: 10;
+}
+
+.carousel-btn:hover {
+    background: rgba(255,255,255,0.1);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.prev { left: 12px; }
+.next { right: 12px; }
+
+/* ============================================================
+   DEPOIMENTOS - EFEITO CARD GLOW/HOVER
+============================================================ */
+.reviews-section .reviews {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.review {
+    background: var(--glass);
+    padding: 22px;
+    border-radius: 16px;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.06);
+    animation: fadeInUp .8s ease;
+    transition: box-shadow 0.3s var(--ease), transform 0.3s var(--ease);
+}
+
+.review:hover {
+    box-shadow: 0 0 15px var(--accent-glow); 
+    transform: translateY(-5px);
+}
+
+.stars {
+    color: #4c5a6d;
+    font-size: 22px;
+}
+
+/* Efeito de colorir as estrelas baseado no data-rating */
+.stars[data-rating="5"] { --star-width: 100%; }
+.stars[data-rating="4"] { --star-width: 80%; }
+.stars[data-rating="3"] { --star-width: 60%; }
+.stars[data-rating="2"] { --star-width: 40%; }
+.stars[data-rating="1"] { --star-width: 20%; }
+
+.stars {
+    display: inline-block;
+    position: relative;
+    color: #4c5a6d;
+    font-size: 22px;
+}
+
+.stars::before {
+    content: "★★★★★";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--star-width, 100%); 
+    overflow: hidden;
+    color: gold;
+}
+
+
+.author {
+    display: block;
+    margin-top: 8px;
+    opacity: 0.8;
+}
+
+.add-review-container {
+    background: var(--card);
+    padding: 30px;
+    border-radius: var(--radius);
+    max-width: 700px;
+    margin: 0 auto;
+    box-shadow: var(--shadow-lg);
+}
+
+/* ============================================================
+   FORMULÁRIO - INPUT GLOW
+============================================================ */
+.contact-section h2 {
+    margin-bottom: 30px;
+}
+
+.contact-form {
+    display: grid;
+    gap: 14px;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 30px;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+}
+
+.contact-form label {
+    font-weight: 600;
+    margin-top: 8px;
+    color: var(--heading-color);
+}
+
+input, textarea {
+    background: var(--glass);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 10px;
+    padding: 12px;
+    color: var(--muted);
+    font-size: 15px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus, textarea:focus {
+    border-color: var(--accent-1);
+    box-shadow: 0 0 10px var(--accent-glow);
+    outline: none;
+}
+
+textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* ============================================================
+   BOTÃO WHATSAPP FLUTUANTE - EFEITO MAIS INTENSO
+============================================================ */
 .fab-whats {
-  position:fixed; right:18px; bottom:22px; z-index:999;
-  display:inline-flex; align-items:center; justify-content:center; width:56px; height:56px; border-radius:50%;
-  background:linear-gradient(180deg,var(--accent-1),#1f6fe0); color:white; font-size:24px; text-decoration:none;
-  box-shadow:0 10px 30px rgba(42,134,255,0.18);
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    background: #25D366;
+    color: #fff;
+    font-size: 32px;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow: 0 10px 40px rgba(37,211,102,0.4); 
+    text-decoration: none;
+    transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+    z-index: 3000;
 }
 
-/* Footer */
-.footer { margin-top:40px; padding:20px 0; text-align:center; color:var(--muted); }
+.fab-whats:hover {
+    transform: scale(1.15) rotate(5deg); 
+    box-shadow: 0 15px 50px rgba(37,211,102,0.6);
+}
 
-/* Modal */
-.modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(6,19,37,0.5); z-index:1000; }
-.modal.is-open { display:flex; }
-.modal-content { background:var(--card); border-radius:12px; padding:18px; max-width:520px; width:90%; box-shadow:0 12px 40px rgba(0,0,0,0.25); }
-.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+/* ============================================================
+   MODAL (POP-UP) - NOVO CSS PARA CADASTRO
+============================================================ */
 
-/* small screens */
-@media (max-width:880px) {
-  .hero { grid-template-columns: 1fr; }
-  .logo img { width:92px; }
-  .carousel-track img { width:200px; height:120px; }
-  .header { padding:12px 0; }
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 4000;
+}
+
+.modal.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: var(--bg-2); 
+    padding: 30px;
+    border-radius: var(--radius);
+    max-width: 480px;
+    width: 90%;
+    box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    font-size: 30px;
+    color: var(--muted);
+    cursor: pointer;
+    opacity: 0.7;
 }

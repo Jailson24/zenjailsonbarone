@@ -1,58 +1,60 @@
-const CACHE_NAME = 'site-seguro-v5'; // Versão final para forçar atualização
+const CACHE = "zen-v5";
+
 const ASSETS = [
-  '/', // Raiz do site
-  'index.html',
-  'styles.css',
-  'script.js',
-  'manifest.json',
-  'img/gal1.jpg',
-  'img/gal2.jpg',
-  'img/gal3.jpg',
-  'img/logo.png',
-  'img/thumbnail.jpg'
+  "./index.html",
+  "./styles.css",
+  "./script.js",
+  "./manifest.json",
+  "./img/logo.png",
+  "./img/gal1.jpg",
+  "./img/gal2.jpg",
+  "./img/gal3.jpg",
+  "./img/thumbnail.jpg",
+  "./img/icon-192.png",
+  "./img/icon-512.png"
 ];
 
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(c => c.addAll(ASSETS))
+self.addEventListener("install", e => {
+  e.waitUntil(
+    caches.open(CACHE).then(cache => cache.addAll(ASSETS))
   );
   self.skipWaiting();
 });
 
-self.addEventListener('activate', event => {
-  event.waitUntil(
+self.addEventListener("activate", e => {
+  e.waitUntil(
     caches.keys().then(keys =>
-      // Deleta caches antigos
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+      Promise.all(keys.map(k => k !== CACHE && caches.delete(k)))
     )
   );
   self.clients.claim();
 });
 
-self.addEventListener('fetch', event => {
-  const req = event.request;
+self.addEventListener("fetch", e => {
 
-  // Não interfere em APIs externas (como o Google Apps Script)
-  if (!req.url.startsWith(self.location.origin)) {
-    return;
-  }
+  // Não interceptar Google Apps Script ou domínios externos
+  if (!e.request.url.startsWith(self.location.origin)) return;
 
-  // Navegação → network first
-  if (req.mode === 'navigate') {
-    event.respondWith(
-      fetch(req).catch(() => caches.match('index.html')) // Usa 'index.html' sem barra
+  // Navegação: network first
+  if (e.request.mode === "navigate") {
+    e.respondWith(
+      fetch(e.request).catch(() => caches.match("./index.html"))
     );
     return;
   }
 
-  // Assets → cache first
-  event.respondWith(
-    caches.match(req).then(cached =>
-      cached ||
-      fetch(req).then(resp => {
-        caches.open(CACHE_NAME).then(c => c.put(req, resp.clone()));
-        return resp;
-      })
-    )
+  // Assets: cache first
+  e.respondWith(
+    caches.match(e.request).then(cacheRes => {
+      return (
+        cacheRes ||
+        fetch(e.request).then(networkRes => {
+          caches.open(CACHE).then(cache =>
+            cache.put(e.request, networkRes.clone())
+          );
+          return networkRes;
+        })
+      );
+    })
   );
 });

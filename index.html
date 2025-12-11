@@ -4,12 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>ZEN • Seguros</title>
-    <meta name="description" content="Seguro automotivo completo, assistência 24h, coberturas essenciais e atendimento especializado. Solicite sua cotação.">
+    <title>ZEN Seguros • Jailson Barone | Proteção Automotiva Total</title>
+    <meta name="description" content="Seguro automotivo completo com assistência 24h. Solicite sua cotação com Jailson Barone, seu Representante Autorizado ZEN Seguros.">
 
-    <meta property="og:title" content="Seguro Automotivo • Proteção Total">
-    <meta property="og:description" content="Seguro auto com assistência 24h e cobertura completa.">
+    <meta property="og:title" content="ZEN Seguros - Proteção Automotiva Total">
+    <meta property="og:description" content="Seguro auto com assistência 24h e cobertura completa. Cotação Rápida!">
     <meta property="og:image" content="img/logo.png">
+    <meta property="og:type" content="website">
 
     <link rel="manifest" href="manifest.json">
 
@@ -25,19 +26,19 @@
 
 <header class="header wrap" role="banner">
     <div class="brand">
-        <div class="logo">
-            <img src="img/logo.png" alt="Logo">
-        </div>
+        <a href="/" class="logo" aria-label="ZEN Seguros - Voltar ao início">
+            <img src="./img/logo.png" alt="Logo ZEN Seguros">
+        </a>
         <div class="title">
-            <h1>ZEN Seguros</h1>
-            <h1>Jailson Barone</h1>
-            <h2>Representante Autorizado</h2>
+            <h1 class="visually-hidden">ZEN Seguros</h1>
+            <p class="main-title">ZEN Seguros</p>
+            <h2>Jailson Barone</h2>
             <p class="muted">Seu Veículo Protegido 24 horas!</p>
         </div>
     </div>
 
     <div class="header-actions">
-        <button id="themeToggle" class="icon-btn">🌙</button>
+        <button id="themeToggle" class="icon-btn" aria-label="Alternar tema claro/escuro">🌙</button>
         <a id="whatsappTop" class="btn btn-primary" href="https://wa.me/5521997882718?text=Olá, quero uma cotação!" target="_blank">WhatsApp</a>
     </div>
 </header>
@@ -45,20 +46,32 @@
 
 <section class="hero wrap reveal">
     <div class="hero-video" id="ytLazy">
-        <img src="img/thumbnail.jpg" class="yt-thumb">
+        <img src="img/thumbnail.jpg" class="yt-thumb" alt="Thumbnail do vídeo de apresentação">
         <div class="yt-play"></div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const yt = document.getElementById("ytLazy");
-            const loadVideo = () => {
-                // SUBSTITUA 'SEU_VIDEO_ID_AQUI' PELO ID REAL DO SEU VÍDEO DO YOUTUBE
-                yt.innerHTML = `<iframe src="https://www.youtube.com/embed/SEU_VIDEO_ID_AQUI?autoplay=1"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            
+            // Função para carregar e iniciar o vídeo automaticamente
+            const loadVideoAndAutoplay = () => {
+                // Autoplay=1, mute=1 (essencial para funcionar em Chrome/Firefox), controls=0 para visual mais limpo, loop=1
+                yt.innerHTML = `<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&controls=0&loop=1&playlist=dQw4w9WgXcQ"
+                    allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen loading="lazy"></iframe>`;
             };
-            yt.addEventListener("click", loadVideo);
+            
+            // Ocultar a thumb/play e carregar o vídeo automaticamente
+            if (yt) {
+                const thumb = yt.querySelector('.yt-thumb');
+                const playIcon = yt.querySelector('.yt-play');
+
+                if (thumb) thumb.style.display = 'none';
+                if (playIcon) playIcon.style.display = 'none';
+                
+                loadVideoAndAutoplay();
+            }
         });
     </script>
 
@@ -74,16 +87,16 @@
 <section class="carousel-section wrap reveal">
     <h2>Alguns de nossos segurados</h2>
 
-    <div class="carousel">
-        <button class="carousel-btn prev">‹</button>
+    <div class="carousel" role="region" aria-label="Galeria de Veículos Segurados">
+        <button class="carousel-btn prev" aria-label="Slide anterior">‹</button>
 
         <div class="carousel-track">
-            <img src="img/gal1.jpg">
-            <img src="img/gal2.jpg">
-            <img src="img/gal3.jpg">
+            <img src="img/gal1.jpg" alt="Carro segurado 1">
+            <img src="img/gal2.jpg" alt="Carro segurado 2">
+            <img src="img/gal3.jpg" alt="Carro segurado 3">
         </div>
 
-        <button class="carousel-btn next">›</button>
+        <button class="carousel-btn next" aria-label="Próximo slide">›</button>
     </div>
 </section>
 
@@ -106,11 +119,11 @@
 
             <label>Sua Avaliação</label>
             <div class="star-rating">
-                <input type="radio" id="star5" name="rating" value="5" required><label for="star5">★</label>
-                <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
-                <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
-                <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
-                <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+                <input type="radio" id="star5" name="rating" value="5" required><label for="star5" aria-label="5 estrelas">★</label>
+                <input type="radio" id="star4" name="rating" value="4"><label for="star4" aria-label="4 estrelas">★</label>
+                <input type="radio" id="star3" name="rating" value="3"><label for="star3" aria-label="3 estrelas">★</label>
+                <input type="radio" id="star2" name="rating" value="2"><label for="star2" aria-label="2 estrelas">★</label>
+                <input type="radio" id="star1" name="rating" value="1"><label for="star1" aria-label="1 estrela">★</label>
             </div>
 
             <label for="rComment">Comentário</label>
@@ -145,7 +158,7 @@
 </section>
 
 
-<a href="https://wa.me/5521997882718?text=Olá, quero uma cotação!" target="_blank" class="fab-whats">💬</a>
+<a href="https://wa.me/5521997882718?text=Olá, quero uma cotação!" target="_blank" class="fab-whats" aria-label="Botão flutuante para contato via WhatsApp">💬</a>
 
 <footer class="footer wrap reveal">
     <p>© 2026 ZEN Seguros - Todos os direitos reservados.</p>
@@ -155,7 +168,7 @@
     <div class="modal-content">
         <div class="modal-header">
             <h3 id="modalTitle">Receba Ofertas Exclusivas!</h3>
-            <button class="modal-close-btn">×</button>
+            <button class="modal-close-btn" aria-label="Fechar modal">×</button>
         </div>
 
         <form id="registerForm" class="contact-form">
@@ -186,8 +199,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-    // CORREÇÃO: Usamos o caminho relativo puro, mas requer a limpeza de cache após a implantação
-    navigator.serviceWorker.register('sw.js'); 
+    navigator.serviceWorker.register('sw.js');
 }
 </script>
 
