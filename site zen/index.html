@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>ZEN Seguros • Jailson Barone | Proteção Automotiva Total</title>
+    <meta name="description" content="Seguro automotivo completo com assistência 24h. Solicite sua cotação com Jailson Barone, seu Representante Autorizado ZEN Seguros.">
+
+    <meta property="og:title" content="ZEN Seguros - Proteção Automotiva Total">
+    <meta property="og:description" content="Seguro auto com assistência 24h e cobertura completa. Cotação Rápida!">
+    <meta property="og:image" content="img/logo.png">
+    <meta property="og:type" content="website">
+
+    <link rel="manifest" href="manifest.json">
+
+    <link rel="icon" href="img/icon-192.png">
+    <link rel="apple-touch-icon" href="img/icon-512.png">
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="script.js" as="script">
+</head>
+
+<body>
+
+<header class="header wrap" role="banner">
+    <div class="brand">
+        <a href="/" class="logo" aria-label="ZEN Seguros - Voltar ao início">
+            <img src="./img/logo.png" alt="Logo ZEN Seguros">
+        </a>
+        <div class="title">
+            <h1 class="visually-hidden">ZEN Seguros</h1>
+            <p class="main-title">ZEN Seguros</p>
+            <h2>Jailson Barone</h2>
+            <p class="muted">Seu Veículo Protegido 24 horas!</p>
+        </div>
+    </div>
+
+    <div class="header-actions">
+        <button id="themeToggle" class="icon-btn" aria-label="Alternar tema claro/escuro">🌙</button>
+        <a id="whatsappTop" class="btn btn-primary" href="https://wa.me/5521997882718?text=Olá, quero uma cotação!" target="_blank">WhatsApp</a>
+    </div>
+</header>
+
+
+<section class="hero wrap reveal">
+    <div class="hero-video" id="ytLazy">
+        <img src="img/thumbnail.jpg" class="yt-thumb" alt="Thumbnail do vídeo de apresentação">
+        <div class="yt-play"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const yt = document.getElementById("ytLazy");
+            
+            // Função para carregar e iniciar o vídeo automaticamente
+            const loadVideoAndAutoplay = () => {
+                // Autoplay=1, mute=1 (essencial para funcionar em Chrome/Firefox), controls=0 para visual mais limpo, loop=1
+                yt.innerHTML = `<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&controls=0&loop=1&playlist=dQw4w9WgXcQ"
+                    allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen loading="lazy"></iframe>`;
+            };
+            
+            // Ocultar a thumb/play e carregar o vídeo automaticamente
+            if (yt) {
+                const thumb = yt.querySelector('.yt-thumb');
+                const playIcon = yt.querySelector('.yt-play');
+
+                if (thumb) thumb.style.display = 'none';
+                if (playIcon) playIcon.style.display = 'none';
+                
+                loadVideoAndAutoplay();
+            }
+        });
+    </script>
+
+    <div class="hero-text">
+        <h2>Proteção que acompanha você</h2>
+        <p>Tenha tranquilidade com coberturas completas e assistência rápida.</p>
+        <a href="https://drive.google.com/file/d/1C_IjKY_Y2qe64_rMFT16UvTMApRDrvaP/view?usp=drive_link" target="_blank" class="btn btn-primary">Baixar Condições Gerais</a>
+        <button id="openRegisterModal" class="btn">Receber Novidades</button>
+    </div>
+</section>
+
+
+<section class="carousel-section wrap reveal">
+    <h2>Alguns de nossos segurados</h2>
+
+    <div class="carousel" role="region" aria-label="Galeria de Veículos Segurados">
+        <button class="carousel-btn prev" aria-label="Slide anterior">‹</button>
+
+        <div class="carousel-track">
+            <img src="img/gal1.jpg" alt="Carro segurado 1">
+            <img src="img/gal2.jpg" alt="Carro segurado 2">
+            <img src="img/gal3.jpg" alt="Carro segurado 3">
+        </div>
+
+        <button class="carousel-btn next" aria-label="Próximo slide">›</button>
+    </div>
+</section>
+
+
+<section class="reviews-section wrap reveal">
+    <h2>Depoimentos</h2>
+
+    <div id="reviewsContainer" class="reviews"></div>
+    
+    <div class="add-review-container">
+        <h3>Deixe seu depoimento</h3>
+        <form id="addReviewForm" class="contact-form">
+            <input type="hidden" id="scriptIdReview" value="https://script.google.com/macros/s/AKfycbw2YtU6gP89HpcZo_rSJnZ42TbkEAOGmQk1ArQZ9jfEIaxPO_OiiE9NMdGNeGoDUvGe/exec">
+
+            <label for="rName">Seu Nome</label>
+            <input id="rName" type="text" required>
+
+            <label for="rEmailReview">Seu E-mail</label>
+            <input id="rEmailReview" type="email" required>
+
+            <label>Sua Avaliação</label>
+            <div class="star-rating">
+                <input type="radio" id="star5" name="rating" value="5" required><label for="star5" aria-label="5 estrelas">★</label>
+                <input type="radio" id="star4" name="rating" value="4"><label for="star4" aria-label="4 estrelas">★</label>
+                <input type="radio" id="star3" name="rating" value="3"><label for="star3" aria-label="3 estrelas">★</label>
+                <input type="radio" id="star2" name="rating" value="2"><label for="star2" aria-label="2 estrelas">★</label>
+                <input type="radio" id="star1" name="rating" value="1"><label for="star1" aria-label="1 estrela">★</label>
+            </div>
+
+            <label for="rComment">Comentário</label>
+            <textarea id="rComment" required></textarea>
+
+            <button type="submit" class="btn btn-primary">Enviar</button>
+            <p id="reviewFormStatus"></p>
+        </form>
+        <p class="review-disclaimer">Seu depoimento será exibido após aprovação.</p>
+    </div>
+</section>
+
+
+<section class="contact-section wrap reveal">
+    <h2>Solicitar Cotação</h2>
+
+    <form id="contactForm" class="contact-form">
+        <input type="hidden" id="scriptId" value="https://script.google.com/macros/s/AKfycbw2YtU6gP89HpcZo_rSJnZ42TbkEAOGmQk1ArQZ9jfEIaxPO_OiiE9NMdGNeGoDUvGe/exec">
+
+        <label for="cName">Nome completo</label>
+        <input id="cName" required>
+
+        <label for="cPhone">Telefone</label>
+        <input id="cPhone" type="tel" required>
+
+        <label for="cMsg">Mensagem</label>
+        <textarea id="cMsg" required></textarea>
+
+        <button class="btn btn-primary">Enviar</button>
+        <p id="quoteFormStatus"></p>
+    </form>
+</section>
+
+
+<a href="https://wa.me/5521997882718?text=Olá, quero uma cotação!" target="_blank" class="fab-whats" aria-label="Botão flutuante para contato via WhatsApp">💬</a>
+
+<footer class="footer wrap reveal">
+    <p>© 2026 ZEN Seguros - Todos os direitos reservados.</p>
+</footer>
+
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Receba Ofertas Exclusivas!</h3>
+            <button class="modal-close-btn" aria-label="Fechar modal">×</button>
+        </div>
+
+        <form id="registerForm" class="contact-form">
+            <input type="hidden" id="scriptIdRegister" value="https://script.google.com/macros/s/AKfycbw2YtU6gP89HpcZo_rSJnZ42TbkEAOGmQk1ArQZ9jfEIaxPO_OiiE9NMdGNeGoDUvGe/exec">
+            
+            <label for="rFName">Nome</label>
+            <input id="rFName" required>
+
+            <label for="rLName">Sobrenome</label>
+            <input id="rLName" required>
+
+            <label for="rDOB">Data de Nascimento</label>
+            <input id="rDOB" type="date" required>
+
+            <label for="rPhone">Telefone</label>
+            <input id="rPhone" required>
+
+            <label for="rEmail">E-mail</label>
+            <input id="rEmail" type="email" required>
+
+            <button class="btn btn-primary">Cadastrar</button>
+            <p id="registerFormStatus"></p>
+        </form>
+    </div>
+</div>
+
+<script src="script.js" defer></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+}
+</script>
+
+</body>
+</html>
