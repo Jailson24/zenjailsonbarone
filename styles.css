@@ -1,484 +1,396 @@
 /* ============================================================
-   ROOT / VARIÁVEIS • Tema moderno azul
+   SCRIPT.JS — Código atualizado e otimizado
+   - Implementação real de Back-end com Apps Script (GET/POST)
 ============================================================ */
-:root {
-    --bg:#061325;
-    --bg-2:#07182a;
-    --card:#0e2a4a;
-    --muted:rgba(234,243,255,0.92);
 
-    --accent-1:#2a86ff;
-    --accent-2:#1f67d4;
-    --accent-glow:rgba(42, 134, 255, 0.4); 
+/* ============================================================
+   1) TEMA ESCURO/CLARO
+============================================================ */
+function initTheme() {
+    const toggle = document.getElementById("themeToggle");
 
-    --glass:rgba(255,255,255,0.03);
+    if (!toggle) return;
 
-    --radius:16px;
-    --shadow-lg:0 24px 60px rgba(2,18,40,0.6);
-    --ease:cubic-bezier(.2,.9,.25,1);
+    // Carrega o tema salvo
+    const saved = localStorage.getItem("theme");
+    const currentTheme = saved || document.documentElement.getAttribute("data-theme") || "dark";
 
-    --focus-color:#2a86ff;
-}
+    document.documentElement.setAttribute("data-theme", currentTheme);
+    toggle.setAttribute("aria-pressed", currentTheme === "light");
+    toggle.textContent = currentTheme === "light" ? "☀️" : "🌙";
 
-/* LIGHT MODE */
-[data-theme="light"] {
-    --bg:#f6fbff;
-    --bg-2:#eaf4ff;
-    --card:#ffffff;
-    --muted:#0b2a4a;
-    --glass:rgba(11,42,74,0.03);
-    --accent-glow:rgba(42, 134, 255, 0.2); 
+    // Clique no botão
+    toggle.addEventListener("click", () => {
+        const isLight = document.documentElement.getAttribute("data-theme") === "light";
+        const newTheme = isLight ? "dark" : "light";
+
+        document.documentElement.setAttribute("data-theme", newTheme);
+        localStorage.setItem("theme", newTheme);
+
+        toggle.setAttribute("aria-pressed", newTheme === "light");
+        toggle.textContent = newTheme === "light" ? "☀️" : "🌙";
+    });
 }
 
 /* ============================================================
-   RESET / BASE
+   2) SCROLL REVEAL — efeito suave e inteligente
 ============================================================ */
-* { box-sizing: border-box; }
+function initScrollReveal() {
+    const els = document.querySelectorAll(".reveal");
 
-html, body { height: 100%; }
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                    observer.unobserve(entry.target);
+                }
+            });
+        },
+        {
+            threshold: 0.15,
+            rootMargin: "0px 0px -10% 0px"
+        }
+    );
 
-body {
-    font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto;
-    margin: 0;
-    background:
-        radial-gradient(1200px 400px at 10% 10%, rgba(48,103,255,0.06), transparent),
-        linear-gradient(180deg, var(--bg), var(--bg-2));
-    color: var(--muted);
-    -webkit-font-smoothing: antialiased;
-}
-
-/* CONTAINER PRINCIPAL */
-.wrap {
-    max-width: 1150px;
-    margin: 28px auto;
-    padding: 22px;
-    display: grid;
-    gap: 26px;
+    els.forEach((el) => observer.observe(el));
 }
 
 /* ============================================================
-   HEADER • Correção WhatsApp + Responsividade + Acessibilidade
+   3) CARROSSEL — profissional, suave, responsivo
 ============================================================ */
-.header {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 16px;
-    width: 100%;
+function initCarousel() {
+    const track = document.querySelector(".carousel-track");
+    if (!track) return;
+
+    const prev = document.querySelector(".carousel-btn.prev");
+    const next = document.querySelector(".carousel-btn.next");
+    const slides = [...track.children];
+
+    let index = 0;
+
+    function update() {
+        const container = track.parentElement;
+        const slideWidth = slides[0].offsetWidth;
+        const gap = 20; 
+
+        const scrollAmount = (slideWidth + gap) * index;
+        
+        container.scroll({
+            left: scrollAmount,
+            behavior: 'smooth'
+        });
+    }
+
+    next.addEventListener("click", () => {
+        index = (index + 1) % slides.length;
+        update();
+    });
+
+    prev.addEventListener("click", () => {
+        index = (index - 1 + slides.length) % slides.length;
+        update();
+    });
+
+    // Auto-play (opcional)
+    setInterval(() => {
+        index = (index + 1) % slides.length;
+        update();
+    }, 4500);
+
+    window.addEventListener("resize", update);
+    setTimeout(update, 100); 
 }
 
-/* Marca */
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-}
+/* ============================================================
+   4) HEADER INTELIGENTE — evita quebra do botão WhatsApp
+============================================================ */
+function initSmartHeader() {
+    const header = document.querySelector(".header");
+    const actions = document.querySelector(".header-actions");
+    const brand = document.querySelector(".brand");
 
-/* LOGO - EFEITO DE LUZ/MOVIMENTO APRIMORADO */
-.logo {
-    width: 88px;
-    height: 88px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 0 4px var(--accent-glow), var(--shadow-lg); 
-    animation: floaty 6s ease-in-out infinite;
-    transition: transform 0.3s var(--ease);
-}
+    if (!header || !actions || !brand) return;
 
-.logo img {
-    width: 68%;
-    height: 68%;
-    object-fit: contain;
-    filter: drop-shadow(0 4px 18px rgba(0,0,0,0.35));
-}
+    function checkOverflow() {
+        const W = header.clientWidth;
+        const brandW = brand.clientWidth;
+        const actionsW = actions.clientWidth;
 
-.title {
-    min-width: 0;
-}
+        if (brandW + actionsW > W * 0.85) { 
+            header.classList.add("is-stack");
+        } else {
+            header.classList.remove("is-stack");
+        }
+    }
 
-.title h1 {
-    margin: 0;
-    font-size: 20px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Ações no header */
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.header-actions > * {
-    flex: 0 0 auto !important;
-    min-width: 0;
-}
-
-/* Botão tema - Efeito de Glass aprimorado */
-.icon-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--glass);
-    border: 1px solid rgba(255,255,255,0.08);
-    cursor: pointer;
-    font-size: 18px;
-    backdrop-filter: blur(8px); 
-    transition: all 0.3s var(--ease);
-}
-
-.icon-btn:hover {
-    background: rgba(255,255,255,0.1);
-}
-
-/* WhatsApp TOP — corrigido! */
-#whatsappTop {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    justify-content: center;
-    padding: 8px 14px;
-    height: 40px;
-    font-size: 14px;
-    border-radius: 12px;
-    white-space: nowrap;
-    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-    color: white;
-    text-decoration: none;
-    transition: .2s var(--ease);
-}
-
-/* Evita conflitos */
-.header .btn {
-    flex: 0 0 auto !important;
-}
-
-/* HEADER INTELIGENTE - NOVO CSS */
-.header.is-stack {
-    grid-template-columns: 1fr;
-    text-align: center;
-}
-
-.header.is-stack .brand,
-.header.is-stack .header-actions {
-    justify-content: center;
-}
-
-.header.is-stack .header-actions {
-    margin-top: 10px;
+    window.addEventListener("resize", checkOverflow);
+    setTimeout(checkOverflow, 100);
 }
 
 
 /* ============================================================
-   BOTÕES GERAIS
+   FUNÇÕES DE RENDERIZAÇÃO E CARREGAMENTO DE DEPOIMENTOS
 ============================================================ */
-.btn {
-    padding: 12px 16px;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    font-weight: 700;
-    transition: transform .22s var(--ease), box-shadow .22s var(--ease);
+
+function renderStars(rating) {
+    // Retorna 5 estrelas sólidas. O CSS do .stars usa o atributo data-rating para colorir de ouro
+    return '★'.repeat(5); 
 }
 
-/* BOTÃO PRIMARY - EFEITO DE MOVIMENTO/GLOW APRIMORADO */
-.btn-primary {
-    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-    color: #fff;
-    box-shadow: 0 12px 36px rgba(42,134,255,0.18);
+function renderReview(review) {
+    const container = document.getElementById('reviewsContainer');
+    if (!container) return;
+
+    const starsHtml = renderStars(review.rating); 
+
+    const reviewHtml = `
+        <div class="review visible">
+            <p>"${review.comment}"</p>
+            <div class="stars" data-rating="${review.rating}">${starsHtml}</div>
+            <span class="author">— ${review.name}</span>
+        </div>
+    `;
+
+    // Adiciona o depoimento no início do contêiner (mais novos primeiro)
+    container.insertAdjacentHTML('afterbegin', reviewHtml);
+    
+    // Aciona a animação de reveal
+    const newReviewEl = container.firstElementChild;
+    if (newReviewEl) {
+        newReviewEl.classList.add('visible');
+    }
 }
 
-.btn:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 18px 45px rgba(42,134,255,0.3); 
+// NOVO: Função para carregar depoimentos do Apps Script (GET)
+async function loadReviewsFromBackend() {
+    const scriptIdInput = document.getElementById("scriptIdReview");
+    const container = document.getElementById('reviewsContainer');
+    
+    // Verifica se o URL do Apps Script foi substituído
+    if (!scriptIdInput || scriptIdInput.value.includes('COLE_O_SEU_URL_DE_IMPLANTAÇÃO_GAS_AQUI')) {
+        container.innerHTML = `<p style="color:red; text-align:center;">⚠️ **ATENÇÃO:** Configure a URL do Apps Script no index.html para carregar os depoimentos.</p>`;
+        return; 
+    }
+    
+    const SCRIPT_URL = scriptIdInput.value;
+    container.innerHTML = '<p style="text-align:center; opacity:0.7;">Carregando depoimentos...</p>';
+
+    try {
+        const response = await fetch(SCRIPT_URL, { method: 'GET' });
+        
+        const text = await response.text(); 
+        
+        let reviews;
+        try {
+            reviews = JSON.parse(text);
+        } catch (e) {
+            console.error("Erro ao parsear JSON. Resposta do Apps Script:", text);
+            container.innerHTML = `<p style="color:red; text-align:center;">Erro na comunicação com o servidor de depoimentos. Verifique a implantação do Apps Script (GET/CORS).</p>`;
+            return;
+        }
+
+        container.innerHTML = '';
+        if (reviews.length === 0) {
+            container.innerHTML = `<p style="text-align:center; opacity:0.7;">Seja o primeiro a deixar um depoimento!</p>`;
+            return;
+        }
+
+        reviews.forEach(review => renderReview(review));
+        
+    } catch (error) {
+        console.error('Erro ao carregar depoimentos do Apps Script:', error);
+        container.innerHTML = `<p style="color:red; text-align:center;">Erro ao carregar depoimentos. Verifique a conexão.</p>`;
+    }
 }
 
-/* NOVO: Botão para abrir o Modal de Cadastro */
-#openRegisterModal {
-    background: var(--card); 
-    border: 1px solid rgba(255,255,255,0.15);
-    color: var(--muted);
-}
-#openRegisterModal:hover {
-    background: var(--card);
-    box-shadow: 0 12px 36px rgba(2,18,40,0.6);
+
+/* ============================================================
+   5) FORMULÁRIOS — Envio para Apps Script (POST)
+============================================================ */
+
+const SCRIPT_ID_PLACEHOLDER = "COLE_O_SEU_URL_DE_IMPLANTAÇÃO_GAS_AQUI";
+
+// Função utilitária para enviar dados via fetch
+async function sendFormData(data, formType, statusElement, form) {
+    let scriptIdInput;
+    if (formType === 'review') {
+        scriptIdInput = document.getElementById("scriptIdReview");
+    } else if (formType === 'register') {
+        scriptIdInput = document.getElementById("scriptIdRegister");
+    } else {
+        scriptIdInput = document.getElementById("scriptId"); // quote
+    }
+
+    if (!scriptIdInput || scriptIdInput.value.includes(SCRIPT_ID_PLACEHOLDER)) {
+        statusElement.style.color = 'red';
+        statusElement.textContent = `❌ Erro: Por favor, substitua o texto no input hidden do formulário pela URL do Apps Script.`;
+        return;
+    }
+    
+    statusElement.textContent = "Enviando...";
+    statusElement.style.color = 'var(--accent-1)';
+
+    const SCRIPT_URL = scriptIdInput.value;
+
+    const formData = new URLSearchParams({
+        formType: formType,
+        ...data
+    });
+
+    try {
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            // O Apps Script já lida com o CORS corretamente
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData
+        });
+
+        // O sucesso no fetch indica que o Apps Script recebeu a requisição e está processando os e-mails/planilha.
+        statusElement.style.color = 'green';
+        if (formType === 'quote') {
+            statusElement.textContent = "✅ Cotação enviada com sucesso! Entraremos em contato o mais breve possível.";
+        } else if (formType === 'review') {
+            statusElement.textContent = "✅ Depoimento enviado! Você receberá um e-mail de confirmação. Ele aparecerá no site após a aprovação manual.";
+        } else if (formType === 'register') {
+            statusElement.textContent = "✅ Cadastro realizado com sucesso! Em breve você receberá novidades.";
+            // Fechar o modal após sucesso no cadastro
+            setTimeout(() => {
+                const modal = document.getElementById('registerModal');
+                if(modal) {
+                   modal.classList.remove('is-open');
+                   document.body.style.overflow = '';
+                }
+            }, 1500); 
+        }
+        form.reset();
+
+    } catch (error) {
+        console.error('Erro ao enviar formulário:', error);
+        statusElement.style.color = 'red';
+        statusElement.textContent = "❌ Erro ao enviar. Tente novamente ou verifique a conexão com o servidor.";
+    }
 }
 
+// Inicializa o Formulário de Cotação
+function initQuoteForm() {
+    const form = document.getElementById("contactForm");
+    const status = document.getElementById("quoteFormStatus");
+    if (!form || !status) return;
 
-/* FOCO - EFEITO NEON GLOW */
-:focus-visible {
-    outline: 3px solid var(--focus-color);
-    outline-offset: 3px;
-    box-shadow: 0 0 10px var(--accent-glow);
-    border-radius: var(--radius); 
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const data = {
+            cName: document.getElementById("cName").value.trim(),
+            cPhone: document.getElementById("cPhone").value.trim(),
+            cMsg: document.getElementById("cMsg").value.trim()
+        };
+
+        sendFormData(data, 'quote', status, form);
+    });
+}
+
+// Inicializa o Formulário de Depoimentos
+function initReviewForm() {
+    const form = document.getElementById("addReviewForm");
+    const status = document.getElementById("reviewFormStatus");
+    if (!form || !status) return;
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const rating = form.querySelector('input[name="rating"]:checked');
+        
+        const data = {
+            rName: document.getElementById("rName").value.trim(),
+            rEmailReview: document.getElementById("rEmailReview").value.trim(), 
+            rRating: rating ? rating.value : '0', 
+            rComment: document.getElementById("rComment").value.trim()
+        };
+
+        sendFormData(data, 'review', status, form);
+    });
 }
 
 /* ============================================================
-   HERO (Lazy YouTube)
+   6) FORMULÁRIO DE CADASTRO (DENTRO DO MODAL)
 ============================================================ */
-.hero-video {
-    position: relative;
-    width: 100%;
-    border-radius: 18px;
-    overflow: hidden;
-    cursor: pointer;
-    aspect-ratio: 16 / 9;
-    background: #000;
-    transition: transform 0.4s var(--ease);
+function initRegisterForm() {
+    const form = document.getElementById("registerForm");
+    const status = document.getElementById("registerFormStatus");
+    if (!form || !status) return;
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const data = {
+            rFName: document.getElementById("rFName").value.trim(),
+            rLName: document.getElementById("rLName").value.trim(),
+            rDOB: document.getElementById("rDOB").value.trim(), 
+            rPhone: document.getElementById("rPhone").value.trim(), 
+            rEmail: document.getElementById("rEmail").value.trim()
+        };
+
+        sendFormData(data, 'register', status, form);
+    });
 }
 
-.hero-video:hover {
-    transform: translateY(-5px); 
-    box-shadow: 0 15px 30px rgba(0,0,0,0.5);
-}
-
-.yt-thumb {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.yt-play {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
-    backdrop-filter: blur(5px); 
-    transition: all 0.3s ease;
-}
-
-.yt-play::after {
-    content: '▶';
-    color: white;
-    font-size: 64px;
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 1;
-    transition: opacity 0.3s ease;
-}
-
-.hero-video:hover .yt-play {
-    background: rgba(0,0,0,0.3);
-}
 
 /* ============================================================
-   CARROSSEL
+   7) LÓGICA DO POP-UP MODAL
 ============================================================ */
-.carousel-section h2 {
-    margin-bottom: 14px;
+function initModal() {
+    const modal = document.getElementById('registerModal');
+    const openBtn = document.getElementById('openRegisterModal');
+    const closeBtn = modal ? modal.querySelector('.modal-close-btn') : null;
+
+    if (!modal || !openBtn || !closeBtn) return;
+
+    const openModal = () => {
+        modal.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closeModal = () => {
+        modal.classList.remove('is-open');
+        document.body.style.overflow = '';
+    };
+
+    openBtn.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+
+    // Fechar ao clicar fora do modal
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Fechar com a tecla ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('is-open')) {
+            closeModal();
+        }
+    });
 }
 
-.carousel {
-    position: relative;
-    overflow: hidden;
-}
-
-.carousel-track {
-    display: flex;
-    gap: 20px;
-    transition: transform 0.6s var(--ease);
-}
-
-.carousel-track img {
-    width: 100%;
-    border-radius: 16px;
-    transition: transform 0.3s var(--ease);
-}
-
-.carousel-track img:hover {
-    transform: scale(1.03); 
-}
-
-/* BOTÕES - EFEITO GLASS + FOCUS GLOW */
-.carousel-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: var(--glass);
-    color: white;
-    border-radius: 50%;
-    width: 42px;
-    height: 42px;
-    cursor: pointer;
-    border: none;
-    backdrop-filter: blur(8px);
-    transition: all 0.3s var(--ease);
-    z-index: 10;
-}
-
-.carousel-btn:hover {
-    background: rgba(255,255,255,0.1);
-    transform: translateY(-50%) scale(1.1);
-}
-
-.prev { left: 12px; }
-.next { right: 12px; }
 
 /* ============================================================
-   DEPOIMENTOS - EFEITO CARD GLOW/HOVER
+   EXECUÇÃO GERAL
 ============================================================ */
-.reviews-section .reviews {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-}
-
-.review {
-    background: var(--glass);
-    padding: 22px;
-    border-radius: 16px;
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.06);
-    animation: fadeInUp .8s ease;
-    transition: box-shadow 0.3s var(--ease), transform 0.3s var(--ease);
-}
-
-.review:hover {
-    box-shadow: 0 0 15px var(--accent-glow); 
-    transform: translateY(-5px);
-}
-
-.stars {
-    color: #4c5a6d; /* Cor base das estrelas (cinza) */
-    font-size: 22px;
-}
-
-/* Efeito de colorir as estrelas baseado no data-rating */
-.stars[data-rating="5"] {
-    --star-width: 100%;
-}
-.stars[data-rating="4"] {
-    --star-width: 80%;
-}
-.stars[data-rating="3"] {
-    --star-width: 60%;
-}
-.stars[data-rating="2"] {
-    --star-width: 40%;
-}
-.stars[data-rating="1"] {
-    --star-width: 20%;
-}
-
-.stars {
-    /* Define o tamanho da estrela gold */
-    display: inline-block;
-    position: relative;
-    color: #4c5a6d;
-    font-size: 22px;
-}
-
-/* Camada que define a cor gold */
-.stars::before {
-    content: "★★★★★";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: var(--star-width, 100%); 
-    overflow: hidden;
-    color: gold; /* Cor da estrela preenchida */
-}
-
-
-.author {
-    display: block;
-    margin-top: 8px;
-    opacity: 0.8;
-}
-
-/* ============================================================
-   FORMULÁRIO - INPUT GLOW
-============================================================ */
-.contact-form {
-    display: grid;
-    gap: 14px;
-}
-
-input, textarea {
-    background: var(--glass);
-    border: 1px solid rgba(255,255,255,0.09);
-    border-radius: 10px;
-    padding: 12px;
-    color: var(--muted);
-    font-size: 15px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-input:focus, textarea:focus {
-    border-color: var(--accent-1);
-    box-shadow: 0 0 10px var(--accent-glow);
-    outline: none;
-}
-
-textarea {
-    min-height: 120px;
-    resize: vertical;
-}
-
-/* ============================================================
-   BOTÃO WHATSAPP FLUTUANTE - EFEITO MAIS INTENSO
-============================================================ */
-.fab-whats {
-    position: fixed;
-    right: 22px;
-    bottom: 22px;
-    background: #25D366;
-    color: #fff;
-    font-size: 32px;
-    width: 64px;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    box-shadow: 0 10px 40px rgba(37,211,102,0.4); 
-    text-decoration: none;
-    transition: transform .3s var(--ease), box-shadow .3s var(--ease);
-    z-index: 3000;
-}
-
-.fab-whats:hover {
-    transform: scale(1.15) rotate(5deg); 
-    box-shadow: 0 15px 50px rgba(37,211,102,0.6);
-}
-
-/* ============================================================
-   MODAL (POP-UP) - NOVO CSS PARA CADASTRO
-============================================================ */
-
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-    z-index: 4000;
-}
-
-.modal.is-open {
-    opacity: 1;
-    visibility: visible;
-}
-
-.modal-content {
-    background: var(--bg-2); 
-    padding: 30px;
-    border-radius: var(--radius);
-    max-width: 480px;
-    width: 90%;
-    box-shadow: var(--shadow-lg);
+document.addEventListener("DOMContentLoaded", () => {
+    initTheme();
+    initScrollReveal();
+    initCarousel();
+    initSmartHeader();
+    initQuoteForm(); 
+    initReviewForm(); 
+    initRegisterForm(); 
+    initModal();
+    
+    // CARREGA OS DEPOIMENTOS PERMANENTES DO BACKEND
+    loadReviewsFromBackend(); 
+});
