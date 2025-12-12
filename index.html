@@ -54,23 +54,31 @@
         document.addEventListener("DOMContentLoaded", () => {
             const yt = document.getElementById("ytLazy");
             
-            // Função para carregar e iniciar o vídeo automaticamente
-            const loadVideoAndAutoplay = () => {
-                // Autoplay=1, mute=1 (essencial para funcionar em Chrome/Firefox), controls=0 para visual mais limpo, loop=1
-                yt.innerHTML = `<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&controls=0&loop=1&playlist=dQw4w9WgXcQ"
-                    allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
+            // Função que carrega o iframe quando o usuário interage
+            const loadVideo = (autoplay = false) => {
+                // Adicionado 'allowfullscreen' para permitir tela cheia.
+                // 'controls=1' para mostrar controles.
+                yt.innerHTML = `<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=${autoplay ? 1 : 0}&controls=1&loop=1&playlist=dQw4w9WgXcQ"
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                     allowfullscreen loading="lazy"></iframe>`;
             };
-            
-            // Ocultar a thumb/play e carregar o vídeo automaticamente
+
             if (yt) {
                 const thumb = yt.querySelector('.yt-thumb');
                 const playIcon = yt.querySelector('.yt-play');
 
-                if (thumb) thumb.style.display = 'none';
-                if (playIcon) playIcon.style.display = 'none';
+                // Comportamento: mostrar thumbnail/ícone de play e carregar no clique.
+                const handlePlayClick = () => {
+                    if (thumb) thumb.style.display = 'none';
+                    if (playIcon) playIcon.style.display = 'none';
+                    loadVideo(true); // Carrega e inicia o vídeo
+                    yt.removeEventListener('click', handlePlayClick);
+                };
                 
-                loadVideoAndAutoplay();
+                // Inicialmente, exibe a imagem e carrega o vídeo no clique.
+                if (thumb) thumb.style.display = 'block';
+                if (playIcon) playIcon.style.display = 'block';
+                yt.addEventListener('click', handlePlayClick);
             }
         });
     </script>

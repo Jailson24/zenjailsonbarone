@@ -60,7 +60,9 @@ function initScrollReveal() {
 ============================================================ */
 function initCarousel() {
     const track = document.querySelector(".carousel-track");
-    if (!track) return;
+    const carouselContainer = document.querySelector(".carousel"); // O elemento pai que tem overflow: hidden
+
+    if (!track || !carouselContainer) return;
 
     const prev = document.querySelector(".carousel-btn.prev");
     const next = document.querySelector(".carousel-btn.next");
@@ -68,50 +70,57 @@ function initCarousel() {
     const totalSlides = slides.length;
 
     let index = 0;
+    let autoPlayInterval;
 
     function update() {
         if (slides.length === 0) return;
         
-        // CORREÇÃO CRÍTICA PARA RESPONSIVIDADE:
-        
-        // 1. Obtém a posição esquerda do slide que deve ser alinhado.
+        // NOVO CÁLCULO RESPONSIVO:
         const targetSlide = slides[index];
-        const targetOffsetLeft = targetSlide.offsetLeft; // Posição em relação ao track
         
-        // 2. O gap (espaçamento) é de 20px no CSS. Subtraímos (index * 20) 
-        // para garantir que o primeiro slide (index 0) comece exatamente em 0,
-        // mas os slides seguintes considerem o gap.
-        const gap = 20; 
-        const translateAmount = targetOffsetLeft - (index * gap); 
+        // Calcula o offset do slide em relação ao início do track
+        const targetOffsetLeft = targetSlide.offsetLeft; 
 
-        // Move o carrossel usando transform
-        track.style.transform = `translateX(-${translateAmount}px)`;
+        // Rola o container pai (carousel) até o slide desejado.
+        // O smooth scroll garante a animação suave.
+        carouselContainer.scrollTo({
+            left: targetOffsetLeft,
+            behavior: 'smooth'
+        });
     }
 
     // Navegação Manual (prev/next)
+    function resetAutoPlay() {
+        clearInterval(autoPlayInterval);
+        startAutoPlay();
+    }
+
     if (next && prev) {
         next.addEventListener("click", () => {
-            // Avança e faz loop (0, 1, 2, 0, 1, ...)
             index = (index + 1) % totalSlides; 
             update();
+            resetAutoPlay(); // Reinicia o autoplay após interação manual
         });
 
         prev.addEventListener("click", () => {
-            // Retrocede e faz loop (2, 1, 0, 2, 1, ...)
             index = (index - 1 + totalSlides) % totalSlides;
             update();
+            resetAutoPlay(); // Reinicia o autoplay após interação manual
         });
     }
 
     // Auto-play: Garante que o índice avance e volte ao 0.
-    setInterval(() => {
-        index = (index + 1) % totalSlides;
-        update();
-    }, 4500); // Passa a cada 4.5 segundos
+    function startAutoPlay() {
+        autoPlayInterval = setInterval(() => {
+            index = (index + 1) % totalSlides;
+            update();
+        }, 4500); // Passa a cada 4.5 segundos
+    }
 
     // Inicializa na primeira carga e recalcula ao redimensionar
     window.addEventListener("resize", update);
     setTimeout(update, 100); 
+    startAutoPlay(); 
 }
 
 /* ============================================================
