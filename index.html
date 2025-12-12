@@ -45,34 +45,32 @@
 
 
 <section class="hero wrap reveal">
-
-    <!-- Thumbnail + lazy load -->
     <div class="hero-video" id="ytLazy">
         <img src="img/thumbnail.jpg" class="yt-thumb" alt="Thumbnail do vídeo de apresentação">
         <div class="yt-play"></div>
     </div>
 
-    <!-- SCRIPT DO VÍDEO AUTOPLAY + TELA CHEIA -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const yt = document.getElementById("ytLazy");
-
-            const loadVideo = () => {
-                yt.innerHTML = `
-                <iframe 
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&controls=1&loop=1&playlist=dQw4w9WgXcQ&modestbranding=1&rel=0"
-                    allow="autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-                    allowfullscreen 
-                    loading="lazy">
-                </iframe>`;
+            
+            // Função para carregar e iniciar o vídeo automaticamente
+            const loadVideoAndAutoplay = () => {
+                // Autoplay=1, mute=1 (essencial para funcionar em Chrome/Firefox), controls=0 para visual mais limpo, loop=1
+                yt.innerHTML = `<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&controls=0&loop=1&playlist=dQw4w9WgXcQ"
+                    allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen loading="lazy"></iframe>`;
             };
-
+            
+            // Ocultar a thumb/play e carregar o vídeo automaticamente
             if (yt) {
                 const thumb = yt.querySelector('.yt-thumb');
-                const icon = yt.querySelector('.yt-play');
+                const playIcon = yt.querySelector('.yt-play');
+
                 if (thumb) thumb.style.display = 'none';
-                if (icon) icon.style.display = 'none';
-                loadVideo();
+                if (playIcon) playIcon.style.display = 'none';
+                
+                loadVideoAndAutoplay();
             }
         });
     </script>
@@ -200,9 +198,9 @@
 <script src="script.js" defer></script>
 
 <script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js');
-    }
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+}
 </script>
 
 </body>
