@@ -1,5 +1,5 @@
 /* ============================================================
-   SCRIPT.JS — Código atualizado e otimizado
+   SCRIPT.JS — Código Otimizado para GitHub Pages
 ============================================================ */
 
 /* ============================================================
@@ -10,9 +10,9 @@ function initTheme() {
 
     if (!toggle) return;
 
-    // Carrega o tema salvo
+    // Carrega o tema salvo ou usa o padrão 'dark'
     const saved = localStorage.getItem("theme");
-    const currentTheme = saved || document.documentElement.getAttribute("data-theme") || "dark";
+    const currentTheme = saved || "dark";
 
     document.documentElement.setAttribute("data-theme", currentTheme);
     toggle.setAttribute("aria-pressed", currentTheme === "light");
@@ -35,7 +35,8 @@ function initTheme() {
    2) SCROLL REVEAL — efeito suave e inteligente
 ============================================================ */
 function initScrollReveal() {
-    const els = document.querySelectorAll(".reveal");
+    // Aplica o efeito reveal tanto em sections (.reveal) quanto nos depoimentos (.review)
+    const els = document.querySelectorAll(".reveal, .review");
 
     const observer = new IntersectionObserver(
         (entries) => {
@@ -47,7 +48,7 @@ function initScrollReveal() {
             });
         },
         {
-            threshold: 0.15,
+            threshold: 0.1, // Disparar quando 10% do elemento estiver visível
             rootMargin: "0px 0px -10% 0px"
         }
     );
@@ -56,11 +57,11 @@ function initScrollReveal() {
 }
 
 /* ============================================================
-   3) CARROSSEL — profissional, suave, responsivo e AUTOMÁTICO (CORRIGIDO)
+   3) CARROSSEL — responsivo e automático
 ============================================================ */
 function initCarousel() {
     const track = document.querySelector(".carousel-track");
-    const carouselContainer = document.querySelector(".carousel"); // O elemento pai que tem overflow: hidden
+    const carouselContainer = document.querySelector(".carousel"); 
 
     if (!track || !carouselContainer) return;
 
@@ -75,70 +76,62 @@ function initCarousel() {
     function update() {
         if (slides.length === 0) return;
         
-        // NOVO CÁLCULO RESPONSIVO:
         const targetSlide = slides[index];
-        
-        // Calcula o offset do slide em relação ao início do track
+        // Calculamos o deslocamento do slide alvo em relação ao início do track.
         const targetOffsetLeft = targetSlide.offsetLeft; 
 
-        // Rola o container pai (carousel) até o slide desejado.
-        // O smooth scroll garante a animação suave.
+        // Rola o container pai (carousel) até o slide desejado com scroll suave.
         carouselContainer.scrollTo({
             left: targetOffsetLeft,
             behavior: 'smooth'
         });
     }
 
-    // Navegação Manual (prev/next)
     function resetAutoPlay() {
         clearInterval(autoPlayInterval);
         startAutoPlay();
     }
 
+    // Navegação Manual
     if (next && prev) {
         next.addEventListener("click", () => {
             index = (index + 1) % totalSlides; 
             update();
-            resetAutoPlay(); // Reinicia o autoplay após interação manual
+            resetAutoPlay(); 
         });
 
         prev.addEventListener("click", () => {
+            // Garante que o índice não fique negativo ao decrementar
             index = (index - 1 + totalSlides) % totalSlides;
             update();
-            resetAutoPlay(); // Reinicia o autoplay após interação manual
+            resetAutoPlay(); 
         });
     }
 
-    // Auto-play: Garante que o índice avance e volte ao 0.
+    // Auto-play
     function startAutoPlay() {
         autoPlayInterval = setInterval(() => {
             index = (index + 1) % totalSlides;
             update();
-        }, 4500); // Passa a cada 4.5 segundos
+        }, 4500); 
     }
 
-    // Inicializa na primeira carga e recalcula ao redimensionar
+    // Inicialização e responsividade: Recalcula a posição ao redimensionar
     window.addEventListener("resize", update);
     setTimeout(update, 100); 
     startAutoPlay(); 
 }
 
 /* ============================================================
-   4) HEADER INTELIGENTE — evita quebra do botão WhatsApp
+   4) HEADER INTELIGENTE
 ============================================================ */
 function initSmartHeader() {
     const header = document.querySelector(".header");
-    const actions = document.querySelector(".header-actions");
-    const brand = document.querySelector(".brand");
-
-    if (!header || !actions || !brand) return;
+    if (!header) return;
 
     function checkOverflow() {
-        const W = header.clientWidth;
-        const brandW = brand.clientWidth;
-        const actionsW = actions.clientWidth;
-
-        if (brandW + actionsW > W * 0.85) { 
+        // Usa um ponto de interrupção fixo que demonstrou funcionar bem com o layout flex
+        if (window.innerWidth < 650) { 
             header.classList.add("is-stack");
         } else {
             header.classList.remove("is-stack");
@@ -151,86 +144,9 @@ function initSmartHeader() {
 
 
 /* ============================================================
-   FUNÇÕES DE RENDERIZAÇÃO E CARREGAMENTO DE DEPOIMENTOS
-============================================================ */
-
-function renderStars(rating) {
-    // Retorna 5 estrelas sólidas. O CSS do .stars usa o atributo data-rating para colorir de ouro
-    return '★'.repeat(5); 
-}
-
-function renderReview(review) {
-    const container = document.getElementById('reviewsContainer');
-    if (!container) return;
-
-    const starsHtml = renderStars(review.rating); 
-
-    const reviewHtml = `
-        <div class="review visible">
-            <p>"${review.comment}"</p>
-            <div class="stars" data-rating="${review.rating}">${starsHtml}</div>
-            <span class="author">— ${review.name}</span>
-        </div>
-    `;
-
-    // Adiciona o depoimento no início do contêiner (mais novos primeiro)
-    container.insertAdjacentHTML('afterbegin', reviewHtml);
-    
-    // Aciona a animação de reveal
-    const newReviewEl = container.firstElementChild;
-    if (newReviewEl) {
-        newReviewEl.classList.add('visible');
-    }
-}
-
-// NOVO: Função para carregar depoimentos do Apps Script (GET)
-async function loadReviewsFromBackend() {
-    const scriptIdInput = document.getElementById("scriptIdReview");
-    const container = document.getElementById('reviewsContainer');
-    
-    // Alerta se a URL não for alterada
-    if (!scriptIdInput || !scriptIdInput.value.startsWith('https://script.google.com/')) {
-        container.innerHTML = `<p style="color:red; text-align:center;">⚠️ **ATENÇÃO:** Configure a URL de implantação 'doGet' do Apps Script no index.html para carregar os depoimentos.</p>`;
-        return; 
-    }
-    
-    const SCRIPT_URL = scriptIdInput.value;
-    container.innerHTML = '<p style="text-align:center; opacity:0.7;">Carregando depoimentos...</p>';
-
-    try {
-        const response = await fetch(SCRIPT_URL, { method: 'GET' });
-        
-        // CORRIGIDO: Usa response.json() para tratar o ContentService.MimeType.JSON
-        let reviews = await response.json(); 
-
-        container.innerHTML = '';
-        
-        if (reviews.error) {
-            console.error("Erro do servidor Apps Script:", reviews.error);
-             container.innerHTML = `<p style="color:red; text-align:center;">Erro na comunicação com o servidor. Verifique o log do Apps Script.</p>`;
-             return;
-        }
-
-        if (reviews.length === 0) {
-            container.innerHTML = `<p style="text-align:center; opacity:0.7;">Seja o primeiro a deixar um depoimento!</p>`;
-            return;
-        }
-
-        // Exibe os depoimentos (inverte para mostrar os mais novos primeiro)
-        reviews.reverse().forEach(review => renderReview(review));
-        
-    } catch (error) {
-        console.error('Erro ao carregar depoimentos do Apps Script:', error);
-        container.innerHTML = `<p style="color:red; text-align:center;">Erro de rede/JSON. Certifique-se que o script está implantado como "Qualquer pessoa".</p>`;
-    }
-}
-
-
-/* ============================================================
    5) FORMULÁRIOS — Envio para Apps Script (POST)
 ============================================================ */
 
-// Função utilitária para enviar dados via fetch
 async function sendFormData(data, formType, statusElement, form) {
     let scriptIdInput;
     if (formType === 'review') {
@@ -243,12 +159,12 @@ async function sendFormData(data, formType, statusElement, form) {
 
     if (!scriptIdInput || !scriptIdInput.value.startsWith('https://script.google.com/')) {
         statusElement.style.color = 'red';
-        statusElement.textContent = `❌ Erro: Por favor, substitua o texto no input hidden do formulário pela URL do Apps Script.`;
+        statusElement.textContent = `❌ Erro: Configure a URL de implantação do Apps Script no input hidden do formulário.`;
         return;
     }
     
     statusElement.textContent = "Enviando...";
-    statusElement.style.color = 'var(--accent-1)';
+    statusElement.style.color = '#2a86ff'; // Usa a cor do accent
 
     const SCRIPT_URL = scriptIdInput.value;
 
@@ -258,7 +174,7 @@ async function sendFormData(data, formType, statusElement, form) {
     });
 
     try {
-        const response = await fetch(SCRIPT_URL, {
+        await fetch(SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors', 
             headers: {
@@ -269,12 +185,12 @@ async function sendFormData(data, formType, statusElement, form) {
 
         statusElement.style.color = 'green';
         if (formType === 'quote') {
-            statusElement.textContent = "✅ Cotação enviada com sucesso por e-mail! Entraremos em contato.";
+            statusElement.textContent = "✅ Cotação enviada! Entraremos em contato o mais breve possível.";
         } else if (formType === 'review') {
-            statusElement.textContent = "✅ Depoimento enviado! Você receberá um e-mail de confirmação. Após a aprovação manual, ele aparecerá no site.";
+            statusElement.textContent = "✅ Depoimento enviado para moderação! Obrigado por sua avaliação.";
         } else if (formType === 'register') {
-            statusElement.textContent = "✅ Cadastro realizado com sucesso! Em breve você receberá novidades.";
-            // Fechar o modal após sucesso no cadastro
+            statusElement.textContent = "✅ Cadastro realizado com sucesso! Você receberá novidades em breve.";
+            // Fecha o modal
             setTimeout(() => {
                 document.getElementById('registerModal').classList.remove('is-open');
                 document.body.style.overflow = '';
@@ -289,34 +205,28 @@ async function sendFormData(data, formType, statusElement, form) {
     }
 }
 
-// Inicializa o Formulário de Cotação
+// Inicialização dos Formulários (Cotação, Review, Cadastro)
 function initQuoteForm() {
     const form = document.getElementById("contactForm");
     const status = document.getElementById("quoteFormStatus");
     if (!form || !status) return;
-
     form.addEventListener("submit", (e) => {
         e.preventDefault();
-
         const data = {
             cName: document.getElementById("cName").value.trim(),
             cPhone: document.getElementById("cPhone").value.trim(),
             cMsg: document.getElementById("cMsg").value.trim()
         };
-
         sendFormData(data, 'quote', status, form);
     });
 }
 
-// Inicializa o Formulário de Depoimentos
 function initReviewForm() {
     const form = document.getElementById("addReviewForm");
     const status = document.getElementById("reviewFormStatus");
     if (!form || !status) return;
-
     form.addEventListener("submit", (e) => {
         e.preventDefault();
-
         const rating = form.querySelector('input[name="rating"]:checked');
         
         const data = {
@@ -325,22 +235,16 @@ function initReviewForm() {
             rRating: rating ? rating.value : '0', 
             rComment: document.getElementById("rComment").value.trim()
         };
-
         sendFormData(data, 'review', status, form);
     });
 }
 
-/* ============================================================
-   6) FORMULÁRIO DE CADASTRO (DENTRO DO MODAL)
-============================================================ */
 function initRegisterForm() {
     const form = document.getElementById("registerForm");
     const status = document.getElementById("registerFormStatus");
     if (!form || !status) return;
-
     form.addEventListener("submit", (e) => {
         e.preventDefault();
-
         const data = {
             rFName: document.getElementById("rFName").value.trim(),
             rLName: document.getElementById("rLName").value.trim(),
@@ -348,14 +252,13 @@ function initRegisterForm() {
             rPhone: document.getElementById("rPhone").value.trim(), 
             rEmail: document.getElementById("rEmail").value.trim()
         };
-
         sendFormData(data, 'register', status, form);
     });
 }
 
 
 /* ============================================================
-   7) LÓGICA DO POP-UP MODAL
+   7) LÓGICA DO POP-UP MODAL E VÍDEO
 ============================================================ */
 function initModal() {
     const modal = document.getElementById('registerModal');
@@ -377,19 +280,38 @@ function initModal() {
     openBtn.addEventListener('click', openModal);
     closeBtn.addEventListener('click', closeModal);
 
-    // Fechar ao clicar fora do modal
     modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeModal();
-        }
+        if (e.target === modal) closeModal();
     });
 
-    // Fechar com a tecla ESC
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal.classList.contains('is-open')) {
-            closeModal();
-        }
+        if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
     });
+}
+
+function initVideoPlayer() {
+    const yt = document.getElementById("ytLazy");
+    if (!yt) return;
+    
+    // Função para carregar e iniciar o iframe
+    const loadVideo = (autoplay = false) => {
+        yt.innerHTML = `<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=${autoplay ? 1 : 0}&controls=1&loop=1&playlist=dQw4w9WgXcQ"
+            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+            allowfullscreen loading="lazy"></iframe>`;
+    };
+
+    const thumb = yt.querySelector('.yt-thumb');
+    const playIcon = yt.querySelector('.yt-play');
+
+    const handlePlayClick = () => {
+        if (thumb) thumb.style.display = 'none';
+        if (playIcon) playIcon.style.display = 'none';
+        loadVideo(true); 
+        yt.removeEventListener('click', handlePlayClick);
+    };
+
+    // Inicializa o player para ser clicável
+    yt.addEventListener('click', handlePlayClick);
 }
 
 
@@ -405,7 +327,5 @@ document.addEventListener("DOMContentLoaded", () => {
     initReviewForm(); 
     initRegisterForm(); 
     initModal();
-    
-    // CARREGA OS DEPOIMENTOS PERMANENTES DO BACKEND
-    loadReviewsFromBackend(); 
+    initVideoPlayer();
 });

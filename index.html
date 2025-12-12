@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>ZEN Seguros • Jailson Barone | Proteção Automotiva Total</title>
     <meta name="description" content="Seguro automotivo completo com assistência 24h. Solicite sua cotação com Jailson Barone, seu Representante Autorizado ZEN Seguros.">
 
@@ -12,14 +11,629 @@
     <meta property="og:image" content="img/logo.png">
     <meta property="og:type" content="website">
 
-    <link rel="manifest" href="manifest.json">
+    <style>
+        /* ====================================
+           Variáveis e Reset 
+        ==================================== */
+        :root {
+            --dark-bg: #030a13; /* Fundo ligeiramente mais escuro */
+            --dark-surface: #0a1727;
+            --light-text: #f0f4f8; /* Branco suave */
+            --dark-text: #1a1a1a;
+            --accent-1: #2a86ff; /* Azul principal */
+            --accent-2: #216be5;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --radius: 12px; /* Raio ligeiramente maior para elegância */
+            --gap-size: 1.5rem; /* Espaçamento base */
+        }
 
-    <link rel="icon" href="img/icon-192.png">
-    <link rel="apple-touch-icon" href="img/icon-512.png">
+        [data-theme="dark"] {
+            --bg-color: var(--dark-bg);
+            --surface-color: var(--dark-surface);
+            --text-color: var(--light-text);
+            --shadow: 0 8px 25px var(--shadow-color); /* Sombra mais profunda */
+        }
 
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preload" href="styles.css" as="style">
-    <link rel="preload" href="script.js" as="script">
+        [data-theme="light"] {
+            --bg-color: #f0f4f8;
+            --surface-color: #ffffff;
+            --text-color: var(--dark-text);
+            --shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.4s, color 0.4s;
+            line-height: 1.7; /* Melhorar legibilidade */
+        }
+
+        /* ====================================
+           Tipografia
+        ==================================== */
+        h1, h2, h3 {
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            color: var(--accent-1);
+        }
+        
+        @media (max-width: 768px) {
+            h2 { font-size: 2rem; margin-bottom: 2rem; }
+        }
+
+        .muted {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        /* ====================================
+           Layout e Containers 
+        ==================================== */
+        .wrap {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 var(--gap-size);
+        }
+
+        section {
+            padding: 5rem 0; /* Mais respiro */
+        }
+
+        /* ====================================
+           Header 
+        ==================================== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--gap-size) var(--gap-size);
+            border-bottom: 1px solid var(--dark-surface);
+            background-color: var(--bg-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo img {
+            height: 55px;
+            width: auto;
+        }
+
+        .title p {
+            font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .title h2 {
+            font-size: 1rem;
+            margin: 0;
+            color: var(--accent-1);
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        /* Responsivo Header */
+        @media (max-width: 650px) {
+            .header.is-stack {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding-bottom: 10px;
+            }
+            .header.is-stack .header-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+
+        /* ====================================
+           Botões e Componentes Gerais 
+        ==================================== */
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: 2px solid var(--accent-1);
+            transition: background-color 0.3s, color 0.3s, transform 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-1);
+            color: var(--light-text);
+            border-color: var(--accent-1);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-2);
+            border-color: var(--accent-2);
+            transform: translateY(-2px);
+        }
+        
+        .btn:hover:not(.btn-primary) {
+            background-color: var(--surface-color);
+            color: var(--accent-1);
+        }
+
+        .icon-btn {
+            background: var(--surface-color);
+            border: 1px solid var(--accent-1);
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+        
+        .icon-btn:hover {
+            background-color: var(--accent-1);
+            color: var(--light-text);
+        }
+
+        /* ====================================
+           Hero Section (Vídeo) 
+        ==================================== */
+        .hero {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+        }
+
+        .hero-video {
+            flex: 1.2; /* Dar mais peso ao vídeo */
+            aspect-ratio: 16 / 9;
+            position: relative;
+            cursor: pointer;
+            background-color: #000;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .hero-video iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .yt-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .yt-play {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90px;
+            height: 90px;
+            background: var(--accent-1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s, opacity 0.3s;
+            box-shadow: 0 0 0 10px rgba(42, 134, 255, 0.3);
+        }
+
+        .yt-play::before {
+            content: '▶';
+            color: white;
+            font-size: 2.2rem;
+            margin-left: 5px;
+        }
+        
+        .hero-video:hover .yt-play {
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        .hero-text {
+            flex: 1;
+        }
+        
+        .hero-text h2 {
+            text-align: left;
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--light-text);
+        }
+
+        .hero-text p {
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .hero-text .btn {
+            margin-right: 1rem;
+        }
+
+        /* Hero Responsivo */
+        @media (max-width: 992px) {
+            .hero { flex-direction: column; text-align: center; }
+            .hero-text h2 { text-align: center; font-size: 2.5rem; color: var(--accent-1); }
+            .hero-video, .hero-text { flex: none; width: 100%; }
+        }
+
+
+        /* ====================================
+           Carousel (Galeria)
+        ==================================== */
+        .carousel-section {
+            background-color: var(--surface-color);
+        }
+
+        .carousel {
+            position: relative;
+            overflow-x: scroll;
+            padding: 0 40px; 
+            scroll-behavior: smooth; /* Adiciona scroll suave */
+            -webkit-overflow-scrolling: touch;
+        }
+        /* Esconder barra de rolagem, mas manter funcionalidade */
+        .carousel::-webkit-scrollbar { display: none; }
+        .carousel { -ms-overflow-style: none; scrollbar-width: none; }
+
+
+        .carousel-track {
+            display: flex;
+            gap: 1.5rem;
+            padding: 10px 0;
+        }
+
+        .carousel-track img {
+            width: 350px;
+            height: 220px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            flex-shrink: 0;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: var(--accent-1);
+            color: white;
+            border: none;
+            padding: 1rem 0.5rem;
+            cursor: pointer;
+            z-index: 50;
+            font-size: 1.5rem;
+            border-radius: var(--radius);
+            transition: background-color 0.3s;
+        }
+
+        .carousel-btn.prev { left: 0; }
+        .carousel-btn.next { right: 0; }
+        
+        @media (max-width: 768px) {
+            .carousel-track img { width: 280px; height: 180px; }
+            .carousel { padding: 0 10px; }
+            .carousel-btn { display: none; } /* Ocultar botões em telas pequenas, usar toque/scroll */
+        }
+
+
+        /* ====================================
+           Reviews Section 
+        ==================================== */
+        .reviews-section {
+            padding-bottom: 5rem;
+        }
+
+        .reviews {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        
+        @media (max-width: 768px) {
+            .reviews { grid-template-columns: 1fr; }
+        }
+
+        .review {
+            background-color: var(--surface-color);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+            border-left: 5px solid var(--accent-1); /* Toque de cor */
+        }
+        
+        .review.visible {
+             opacity: 1;
+             transform: translateY(0);
+        }
+
+        .review p {
+            font-style: italic;
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+        }
+
+        .stars {
+            font-size: 1.6rem;
+            color: #ccc;
+            letter-spacing: 2px;
+            display: inline-block;
+        }
+        
+        .stars[data-rating="5"] { color: gold; }
+        .stars[data-rating="4"] { color: gold; }
+        .stars[data-rating="3"] { color: orange; }
+        /* Cores mantidas para avaliação média/baixa */
+
+        .author {
+            display: block;
+            margin-top: 10px;
+            font-weight: 600;
+            color: var(--accent-1);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .add-review-container {
+            max-width: 650px;
+            margin: 0 auto;
+            background-color: var(--surface-color);
+            padding: 2.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .add-review-container h3 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--accent-1);
+            font-size: 1.8rem;
+        }
+        
+        .review-disclaimer {
+            font-size: 0.9em;
+            text-align: center;
+            opacity: 0.7;
+            margin-top: 1rem;
+        }
+
+        /* Star Rating Inputs (Melhorias visuais) */
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .star-rating input { display: none; }
+        
+        .star-rating label {
+            font-size: 2.5rem;
+            color: #777;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.2s;
+        }
+        
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input:checked ~ label {
+            color: gold;
+            transform: scale(1.1);
+        }
+        
+        .star-rating label:hover {
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+
+
+        /* ====================================
+           Forms e Contato 
+        ==================================== */
+        .contact-section {
+            background-color: var(--dark-surface);
+        }
+        
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        .contact-form label {
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            padding: 15px;
+            border: 1px solid var(--accent-1);
+            border-radius: 8px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: 1.05rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            border-color: var(--light-text);
+            box-shadow: 0 0 0 3px rgba(42, 134, 255, 0.5);
+            outline: none;
+        }
+        
+        .contact-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        #quoteFormStatus, #reviewFormStatus, #registerFormStatus {
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        /* ====================================
+           Modal (Cadastro) 
+        ==================================== */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s;
+        }
+
+        .modal.is-open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--surface-color);
+            padding: 3rem;
+            border-radius: var(--radius);
+            max-width: 500px;
+            width: 90%;
+            box-shadow: var(--shadow);
+            transform: scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Efeito bounce */
+        }
+        
+        .modal.is-open .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .modal-header h3 {
+            color: var(--accent-1);
+            font-size: 2rem;
+        }
+
+        .modal-close-btn {
+            font-size: 2rem;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.3s;
+        }
+        
+        .modal-close-btn:hover {
+            color: var(--accent-1);
+        }
+
+
+        /* ====================================
+           FAB (WhatsApp Flutuante) 
+        ==================================== */
+        .fab-whats {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background-color: #25d366;
+            color: white;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            z-index: 90;
+            transition: transform 0.3s;
+        }
+        
+        .fab-whats:hover {
+            transform: scale(1.1);
+        }
+
+        /* ====================================
+           Footer 
+        ==================================== */
+        .footer {
+            text-align: center;
+            padding: 1.5rem var(--gap-size);
+            border-top: 1px solid var(--dark-surface);
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
+        
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            margin: -1px;
+            padding: 0;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+    </style>
 </head>
 
 <body>
@@ -30,7 +644,6 @@
             <img src="./img/logo.png" alt="Logo ZEN Seguros">
         </a>
         <div class="title">
-            <h1 class="visually-hidden">ZEN Seguros</h1>
             <p class="main-title">ZEN Seguros</p>
             <h2>Jailson Barone</h2>
             <p class="muted">Seu Veículo Protegido 24 horas!</p>
@@ -50,42 +663,9 @@
         <div class="yt-play"></div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const yt = document.getElementById("ytLazy");
-            
-            // Função que carrega o iframe quando o usuário interage
-            const loadVideo = (autoplay = false) => {
-                // Adicionado 'allowfullscreen' para permitir tela cheia.
-                // 'controls=1' para mostrar controles.
-                yt.innerHTML = `<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=${autoplay ? 1 : 0}&controls=1&loop=1&playlist=dQw4w9WgXcQ"
-                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-                    allowfullscreen loading="lazy"></iframe>`;
-            };
-
-            if (yt) {
-                const thumb = yt.querySelector('.yt-thumb');
-                const playIcon = yt.querySelector('.yt-play');
-
-                // Comportamento: mostrar thumbnail/ícone de play e carregar no clique.
-                const handlePlayClick = () => {
-                    if (thumb) thumb.style.display = 'none';
-                    if (playIcon) playIcon.style.display = 'none';
-                    loadVideo(true); // Carrega e inicia o vídeo
-                    yt.removeEventListener('click', handlePlayClick);
-                };
-                
-                // Inicialmente, exibe a imagem e carrega o vídeo no clique.
-                if (thumb) thumb.style.display = 'block';
-                if (playIcon) playIcon.style.display = 'block';
-                yt.addEventListener('click', handlePlayClick);
-            }
-        });
-    </script>
-
     <div class="hero-text">
         <h2>Proteção que acompanha você</h2>
-        <p>Tenha tranquilidade com coberturas completas e assistência rápida.</p>
+        <p>Tenha tranquilidade com coberturas completas e assistência rápida. O melhor seguro auto com a confiança de um representante dedicado.</p>
         <a href="https://drive.google.com/file/d/1C_IjKY_Y2qe64_rMFT16UvTMApRDrvaP/view?usp=drive_link" target="_blank" class="btn btn-primary">Baixar Condições Gerais</a>
         <button id="openRegisterModal" class="btn">Receber Novidades</button>
     </div>
@@ -93,7 +673,7 @@
 
 
 <section class="carousel-section wrap reveal">
-    <h2>Alguns de nossos segurados</h2>
+    <h2>Nossos Clientes Satisfeitos</h2>
 
     <div class="carousel" role="region" aria-label="Galeria de Veículos Segurados">
         <button class="carousel-btn prev" aria-label="Slide anterior">‹</button>
@@ -102,6 +682,9 @@
             <img src="img/gal1.jpg" alt="Carro segurado 1">
             <img src="img/gal2.jpg" alt="Carro segurado 2">
             <img src="img/gal3.jpg" alt="Carro segurado 3">
+            <img src="img/gal1.jpg" alt="Carro segurado 4">
+            <img src="img/gal2.jpg" alt="Carro segurado 5">
+            <img src="img/gal3.jpg" alt="Carro segurado 6">
         </div>
 
         <button class="carousel-btn next" aria-label="Próximo slide">›</button>
@@ -110,7 +693,7 @@
 
 
 <section class="reviews-section wrap reveal">
-    <h2>Depoimentos</h2>
+    <h2>O Que Dizem Nossos Clientes</h2>
 
     <div id="reviewsContainer" class="reviews">
         <div class="review visible">
@@ -143,9 +726,9 @@
             <div class="stars" data-rating="5">★★★★★</div>
             <span class="author">— Alice R.</span>
         </div>
-        </div>
+    </div>
     
-    <div class="add-review-container">
+    <div class="add-review-container reveal">
         <h3>Deixe seu depoimento</h3>
         <form id="addReviewForm" class="contact-form">
             <input type="hidden" id="scriptIdReview" value="https://script.google.com/macros/s/AKfycbw2YtU6gP89HpcZo_rSJnZ42TbkEAOGmQk1ArQZ9jfEIaxPO_OiiE9NMdGNeGoDUvGe/exec">
@@ -168,16 +751,16 @@
             <label for="rComment">Comentário</label>
             <textarea id="rComment" required></textarea>
 
-            <button type="submit" class="btn btn-primary">Enviar</button>
+            <button type="submit" class="btn btn-primary">Enviar Avaliação</button>
             <p id="reviewFormStatus"></p>
         </form>
-        <p class="review-disclaimer">Seu depoimento será exibido após aprovação. (Ele será enviado para Jailson Barone, que o publicará manualmente no site após análise.)</p>
+        <p class="review-disclaimer">Seu depoimento será enviado para moderação e publicado manualmente por Jailson Barone.</p>
     </div>
 </section>
 
 
 <section class="contact-section wrap reveal">
-    <h2>Solicitar Cotação</h2>
+    <h2>Solicite Sua Cotação Rápida</h2>
 
     <form id="contactForm" class="contact-form">
         <input type="hidden" id="scriptId" value="https://script.google.com/macros/s/AKfycbw2YtU6gP89HpcZo_rSJnZ42TbkEAOGmQk1ArQZ9jfEIaxPO_OiiE9NMdGNeGoDUvGe/exec">
@@ -188,10 +771,10 @@
         <label for="cPhone">Telefone</label>
         <input id="cPhone" type="tel" required>
 
-        <label for="cMsg">Mensagem</label>
+        <label for="cMsg">Detalhes do Veículo e Mensagem</label>
         <textarea id="cMsg" required></textarea>
 
-        <button class="btn btn-primary">Enviar</button>
+        <button class="btn btn-primary">Enviar Solicitação</button>
         <p id="quoteFormStatus"></p>
     </form>
 </section>
@@ -200,7 +783,7 @@
 <a href="https://wa.me/5521997882718?text=Olá, quero uma cotação!" target="_blank" class="fab-whats" aria-label="Botão flutuante para contato via WhatsApp">💬</a>
 
 <footer class="footer wrap reveal">
-    <p>© 2026 ZEN Seguros - Todos os direitos reservados.</p>
+    <p>© 2026 ZEN Seguros - Todos os direitos reservados. Representante: Jailson Barone.</p>
 </footer>
 
 <div id="registerModal" class="modal">
@@ -235,12 +818,6 @@
 </div>
 
 <script src="script.js" defer></script>
-
-<script>
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-}
-</script>
 
 </body>
 </html>
