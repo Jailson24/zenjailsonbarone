@@ -36,7 +36,7 @@ function initTheme() {
 ============================================================ */
 function initScrollReveal() {
     // Aplica o efeito reveal tanto em sections (.reveal) quanto nos depoimentos (.review)
-    const els = document.querySelectorAll(".reveal, .review");
+    const els = document.querySelectorAll(".reveal");
 
     const observer = new IntersectionObserver(
         (entries) => {
@@ -315,6 +315,44 @@ function initVideoPlayer() {
 }
 
 
+
+/* ============================================================
+   MODAL IMAGEM FULLSCREEN (CARROSSEL)
+============================================================ */
+function initImageModal() {
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("imageModalImg");
+    const closeBtn = document.querySelector(".image-modal-close");
+
+    if (!modal || !modalImg || !closeBtn) return;
+
+    document.querySelectorAll(".carousel-track img").forEach(img => {
+        img.style.cursor = "zoom-in";
+        img.addEventListener("click", () => {
+            modal.classList.add("open");
+            modalImg.src = img.src;
+            document.body.style.overflow = "hidden";
+        });
+    });
+
+    const closeModal = () => {
+        modal.classList.remove("open");
+        modalImg.src = "";
+        document.body.style.overflow = "";
+    };
+
+    closeBtn.addEventListener("click", closeModal);
+
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
+    });
+}
+
+
 /* ============================================================
    EXECUÇÃO GERAL
 ============================================================ */
@@ -322,6 +360,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     initScrollReveal();
     initCarousel();
+    initImageModal();
     initSmartHeader();
     initQuoteForm(); 
     initReviewForm(); 
