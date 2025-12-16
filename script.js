@@ -7,10 +7,8 @@
 ============================================================ */
 function initTheme() {
     const toggle = document.getElementById("themeToggle");
-
     if (!toggle) return;
 
-    // Carrega o tema salvo ou usa o padrão 'dark'
     const saved = localStorage.getItem("theme");
     const currentTheme = saved || "dark";
 
@@ -18,7 +16,6 @@ function initTheme() {
     toggle.setAttribute("aria-pressed", currentTheme === "light");
     toggle.textContent = currentTheme === "light" ? "☀️" : "🌙";
 
-    // Clique no botão
     toggle.addEventListener("click", () => {
         const isLight = document.documentElement.getAttribute("data-theme") === "light";
         const newTheme = isLight ? "dark" : "light";
@@ -32,10 +29,9 @@ function initTheme() {
 }
 
 /* ============================================================
-   2) SCROLL REVEAL — efeito suave e inteligente
+   2) SCROLL REVEAL
 ============================================================ */
 function initScrollReveal() {
-    // Aplica o efeito reveal tanto em sections (.reveal) quanto nos depoimentos (.review)
     const els = document.querySelectorAll(".reveal");
 
     const observer = new IntersectionObserver(
@@ -47,21 +43,18 @@ function initScrollReveal() {
                 }
             });
         },
-        {
-            threshold: 0.1, // Disparar quando 10% do elemento estiver visível
-            rootMargin: "0px 0px -10% 0px"
-        }
+        { threshold: 0.1 }
     );
 
     els.forEach((el) => observer.observe(el));
 }
 
 /* ============================================================
-   3) CARROSSEL — responsivo e automático
+   3) CARROSSEL
 ============================================================ */
 function initCarousel() {
     const track = document.querySelector(".carousel-track");
-    const carouselContainer = document.querySelector(".carousel"); 
+    const carouselContainer = document.querySelector(".carousel");
 
     if (!track || !carouselContainer) return;
 
@@ -75,12 +68,10 @@ function initCarousel() {
 
     function update() {
         if (slides.length === 0) return;
-        
-        const targetSlide = slides[index];
-        // Calculamos o deslocamento do slide alvo em relação ao início do track.
-        const targetOffsetLeft = targetSlide.offsetLeft; 
 
-        // Rola o container pai (carousel) até o slide desejado com scroll suave.
+        const targetSlide = slides[index];
+        const targetOffsetLeft = targetSlide.offsetLeft;
+
         carouselContainer.scrollTo({
             left: targetOffsetLeft,
             behavior: 'smooth'
@@ -95,16 +86,15 @@ function initCarousel() {
     // Navegação Manual
     if (next && prev) {
         next.addEventListener("click", () => {
-            index = (index + 1) % totalSlides; 
+            index = (index + 1) % totalSlides;
             update();
-            resetAutoPlay(); 
+            resetAutoPlay();
         });
 
         prev.addEventListener("click", () => {
-            // Garante que o índice não fique negativo ao decrementar
             index = (index - 1 + totalSlides) % totalSlides;
             update();
-            resetAutoPlay(); 
+            resetAutoPlay();
         });
     }
 
@@ -113,152 +103,95 @@ function initCarousel() {
         autoPlayInterval = setInterval(() => {
             index = (index + 1) % totalSlides;
             update();
-        }, 4500); 
+        }, 4500);
     }
 
-    // Inicialização e responsividade: Recalcula a posição ao redimensionar
     window.addEventListener("resize", update);
-    setTimeout(update, 100); 
-    startAutoPlay(); 
+    setTimeout(update, 100);
+    startAutoPlay();
 }
 
 /* ============================================================
-   4) HEADER INTELIGENTE
+   4) HEADER RESPONSIVO
 ============================================================ */
 function initSmartHeader() {
     const header = document.querySelector(".header");
     if (!header) return;
 
-    function checkOverflow() {
-        // Usa um ponto de interrupção fixo que demonstrou funcionar bem com o layout flex
-        if (window.innerWidth < 650) { 
-            header.classList.add("is-stack");
-        } else {
-            header.classList.remove("is-stack");
-        }
+    function resize() {
+        header.classList.toggle("is-stack", window.innerWidth < 650);
     }
 
-    window.addEventListener("resize", checkOverflow);
-    setTimeout(checkOverflow, 100);
+    window.addEventListener("resize", resize);
+    resize();
 }
-
 
 /* ============================================================
-   5) FORMULÁRIOS — Envio para Apps Script (POST)
+   5) FORMULÁRIOS
 ============================================================ */
+async function sendFormData(data, type, status, form) {
+    const id =
+        type === "review" ? "scriptIdReview" :
+        type === "register" ? "scriptIdRegister" :
+        "scriptId";
 
-async function sendFormData(data, formType, statusElement, form) {
-    let scriptIdInput;
-    if (formType === 'review') {
-        scriptIdInput = document.getElementById("scriptIdReview");
-    } else if (formType === 'register') {
-        scriptIdInput = document.getElementById("scriptIdRegister");
-    } else {
-        scriptIdInput = document.getElementById("scriptId");
-    }
+    const url = document.getElementById(id)?.value;
+    if (!url) return;
 
-    if (!scriptIdInput || !scriptIdInput.value.startsWith('https://script.google.com/')) {
-        statusElement.style.color = 'red';
-        statusElement.textContent = `❌ Erro: Configure a URL de implantação do Apps Script no input hidden do formulário.`;
-        return;
-    }
-    
-    statusElement.textContent = "Enviando...";
-    statusElement.style.color = '#2a86ff'; // Usa a cor do accent
+    status.textContent = "Enviando...";
 
-    const SCRIPT_URL = scriptIdInput.value;
-
-    const formData = new URLSearchParams({
-        formType: formType,
-        ...data
+    await fetch(url, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ formType: type, ...data })
     });
 
-    try {
-        await fetch(SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors', 
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: formData
-        });
-
-        statusElement.style.color = 'green';
-        if (formType === 'quote') {
-            statusElement.textContent = "✅ Cotação enviada! Entraremos em contato o mais breve possível.";
-        } else if (formType === 'review') {
-            statusElement.textContent = "✅ Depoimento enviado para moderação! Obrigado por sua avaliação.";
-        } else if (formType === 'register') {
-            statusElement.textContent = "✅ Cadastro realizado com sucesso! Você receberá novidades em breve.";
-            // Fecha o modal
-            setTimeout(() => {
-                document.getElementById('registerModal').classList.remove('is-open');
-                document.body.style.overflow = '';
-            }, 1500); 
-        }
-        form.reset();
-
-    } catch (error) {
-        console.error('Erro ao enviar formulário:', error);
-        statusElement.style.color = 'red';
-        statusElement.textContent = "❌ Erro ao enviar. Tente novamente ou verifique a conexão.";
-    }
+    status.textContent = "✅ Enviado com sucesso!";
+    form.reset();
 }
 
-// Inicialização dos Formulários (Cotação, Review, Cadastro)
 function initQuoteForm() {
-    const form = document.getElementById("contactForm");
-    const status = document.getElementById("quoteFormStatus");
-    if (!form || !status) return;
-    form.addEventListener("submit", (e) => {
+    const f = contactForm;
+    f?.addEventListener("submit", e => {
         e.preventDefault();
-        const data = {
-            cName: document.getElementById("cName").value.trim(),
-            cPhone: document.getElementById("cPhone").value.trim(),
-            cMsg: document.getElementById("cMsg").value.trim()
-        };
-        sendFormData(data, 'quote', status, form);
+        sendFormData({
+            cName: cName.value,
+            cPhone: cPhone.value,
+            cMsg: cMsg.value
+        }, "quote", quoteFormStatus, f);
     });
 }
 
 function initReviewForm() {
-    const form = document.getElementById("addReviewForm");
-    const status = document.getElementById("reviewFormStatus");
-    if (!form || !status) return;
-    form.addEventListener("submit", (e) => {
+    const f = addReviewForm;
+    f?.addEventListener("submit", e => {
         e.preventDefault();
-        const rating = form.querySelector('input[name="rating"]:checked');
-        
-        const data = {
-            rName: document.getElementById("rName").value.trim(),
-            rEmailReview: document.getElementById("rEmailReview").value.trim(), 
-            rRating: rating ? rating.value : '0', 
-            rComment: document.getElementById("rComment").value.trim()
-        };
-        sendFormData(data, 'review', status, form);
+        sendFormData({
+            rName: rName.value,
+            rEmailReview: rEmailReview.value,
+            rRating: f.rating.value,
+            rComment: rComment.value
+        }, "review", reviewFormStatus, f);
     });
 }
 
 function initRegisterForm() {
-    const form = document.getElementById("registerForm");
-    const status = document.getElementById("registerFormStatus");
-    if (!form || !status) return;
-    form.addEventListener("submit", (e) => {
+    const f = registerForm;
+    f?.addEventListener("submit", e => {
         e.preventDefault();
-        const data = {
-            rFName: document.getElementById("rFName").value.trim(),
-            rLName: document.getElementById("rLName").value.trim(),
-            rDOB: document.getElementById("rDOB").value.trim(), 
-            rPhone: document.getElementById("rPhone").value.trim(), 
-            rEmail: document.getElementById("rEmail").value.trim()
-        };
-        sendFormData(data, 'register', status, form);
+        sendFormData({
+            rFName: rFName.value,
+            rLName: rLName.value,
+            rDOB: rDOB.value,
+            rPhone: rPhone.value,
+            rEmail: rEmail.value
+        }, "register", registerFormStatus, f);
     });
 }
 
-
 /* ============================================================
-   7) LÓGICA DO POP-UP MODAL E VÍDEO
+   6) MODAL
 ============================================================ */
 function initModal() {
     const modal = document.getElementById('registerModal');
@@ -289,69 +222,60 @@ function initModal() {
     });
 }
 
+/* ============================================================
+   7) VÍDEO — AUTOPLAY SILENCIOSO + BOTÃO ATIVAR SOM
+============================================================ */
 function initVideoPlayer() {
     const yt = document.getElementById("ytLazy");
     if (!yt) return;
-    
-    // Função para carregar e iniciar o iframe
-    const loadVideo = (autoplay = false) => {
-        yt.innerHTML = `<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=${autoplay ? 1 : 0}&controls=1&loop=1&playlist=dQw4w9WgXcQ"
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-            allowfullscreen loading="lazy"></iframe>`;
-    };
 
-    const thumb = yt.querySelector('.yt-thumb');
-    const playIcon = yt.querySelector('.yt-play');
+    yt.style.position = "relative";
 
-    const handlePlayClick = () => {
-        if (thumb) thumb.style.display = 'none';
-        if (playIcon) playIcon.style.display = 'none';
-        loadVideo(true); 
-        yt.removeEventListener('click', handlePlayClick);
-    };
+    yt.innerHTML = `
+        <iframe
+            id="ytPlayer"
+            src="https://www.youtube.com/embed/BWoW-6frVU4?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&playlist=BWoW-6frVU4&enablejsapi=1"
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+            style="width:100%;height:100%;border:0;">
+        </iframe>
+    `;
 
-    // Inicializa o player para ser clicável
-    yt.addEventListener('click', handlePlayClick);
-}
+    const soundBtn = document.createElement("div");
+    soundBtn.textContent = "🔊 Ativar som";
+    soundBtn.style.position = "absolute";
+    soundBtn.style.bottom = "15px";
+    soundBtn.style.right = "15px";
+    soundBtn.style.background = "rgba(0,0,0,0.75)";
+    soundBtn.style.color = "#fff";
+    soundBtn.style.padding = "10px 14px";
+    soundBtn.style.borderRadius = "10px";
+    soundBtn.style.fontSize = "14px";
+    soundBtn.style.cursor = "pointer";
+    soundBtn.style.zIndex = "10";
 
+    yt.appendChild(soundBtn);
 
+    soundBtn.addEventListener("click", e => {
+        e.stopPropagation();
 
-/* ============================================================
-   MODAL IMAGEM FULLSCREEN (CARROSSEL)
-============================================================ */
-function initImageModal() {
-    const modal = document.getElementById("imageModal");
-    const modalImg = document.getElementById("imageModalImg");
-    const closeBtn = document.querySelector(".image-modal-close");
+        const iframe = document.getElementById("ytPlayer");
+        if (!iframe) return;
 
-    if (!modal || !modalImg || !closeBtn) return;
+        iframe.contentWindow.postMessage(
+            JSON.stringify({ event: "command", func: "unMute", args: [] }),
+            "*"
+        );
 
-    document.querySelectorAll(".carousel-track img").forEach(img => {
-        img.style.cursor = "zoom-in";
-        img.addEventListener("click", () => {
-            modal.classList.add("open");
-            modalImg.src = img.src;
-            document.body.style.overflow = "hidden";
-        });
-    });
+        iframe.contentWindow.postMessage(
+            JSON.stringify({ event: "command", func: "setVolume", args: [100] }),
+            "*"
+        );
 
-    const closeModal = () => {
-        modal.classList.remove("open");
-        modalImg.src = "";
-        document.body.style.overflow = "";
-    };
-
-    closeBtn.addEventListener("click", closeModal);
-
-    modal.addEventListener("click", (e) => {
-        if (e.target === modal) closeModal();
-    });
-
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closeModal();
+        soundBtn.remove();
     });
 }
-
 
 /* ============================================================
    EXECUÇÃO GERAL
@@ -360,7 +284,6 @@ document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     initScrollReveal();
     initCarousel();
-    initImageModal();
     initSmartHeader();
     initQuoteForm(); 
     initReviewForm(); 
