@@ -1,5 +1,5 @@
 /* ============================================================
-   SCRIPT.JS — GitHub Pages SAFE (VÍDEO COM SOM)
+   SCRIPT.JS — GitHub Pages SAFE (VÍDEO COM SOM E FULLSCREEN)
 ============================================================ */
 
 function initTheme() {
@@ -68,86 +68,77 @@ function initImageModal() {
     document.addEventListener("keydown", e => e.key === "Escape" && closeModal());
 }
 
-// O vídeo deve iniciar mudo.
 let videoMuted = true;
 
-/**
- * Carrega o iframe do YouTube.
- * @param {boolean} unmute - Se deve ser carregado com som (false = mudo, true = som ligado).
- */
 function loadVideo(unmute = false) {
     const yt = document.getElementById("ytLazy");
     if (!yt) return;
 
-    // 1. Atualiza o estado global com base no que foi solicitado
     videoMuted = !unmute;
-    
-    // 2. Define os parâmetros do iframe e o ícone do botão
     const muteParam = videoMuted ? 1 : 0;
-    
-    // O ícone reflete o estado ATUAL do vídeo:
-    // Se o vídeo está MUDO (true), o ícone mostra MUDO (🔇).
-    // Se o vídeo está LIGADO (false), o ícone mostra SOM ALTO (🔊).
     const soundIcon = videoMuted ? '🔇' : '🔊';
 
-    // 3. Limpa o container
     yt.innerHTML = ''; 
 
-    // 4. Cria o iframe e o botão de som
     const iframeHTML = `
         <iframe
+            id="ytIframe"
             src="https://www.youtube.com/embed/BWoW-6frVU4?autoplay=1&mute=${muteParam}&controls=0&modestbranding=1&rel=0&loop=1&playlist=BWoW-6frVU4&enablejsapi=1"
-            allow="autoplay; encrypted-media; picture-in-picture"
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
             allowfullscreen
             loading="lazy">
         </iframe>
         <button id="videoSoundToggle" onclick="toggleVideoSound()" aria-label="Alternar som do vídeo">${soundIcon}</button>
+        <button id="fullscreenToggle" onclick="toggleFullscreen()" aria-label="Tela cheia">⛶</button>
     `;
 
-    // 5. Insere o novo conteúdo
     yt.insertAdjacentHTML('beforeend', iframeHTML);
     
-    // 6. Exibe o botão de som
     const soundButton = document.getElementById("videoSoundToggle");
+    const fsButton = document.getElementById("fullscreenToggle");
     if (soundButton) soundButton.style.display = 'flex';
+    if (fsButton) fsButton.style.display = 'flex';
 }
 
 function toggleVideoSound() {
-    // O clique deve INVERTER o estado atual (videoMuted).
-    // Se estava mudo, queremos unmute = true. Se estava com som, queremos unmute = false.
     loadVideo(videoMuted); 
 }
 
+function toggleFullscreen() {
+    const elem = document.getElementById("ytLazy");
+
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+            elem.webkitRequestFullscreen();
+        }
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+    }
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     initScrollReveal();
     initCarousel();
     initImageModal();
-    
-    // 1. CHAMA loadVideo NO INÍCIO para garantir Autoplay Mudo (videoMuted = true)
-    // Passamos 'false' para unmute, forçando o estado inicial de Mudo (mute=1) no iframe.
     loadVideo(false); 
 
-    // Funções modais e de formulário
     const openRegisterModal = document.getElementById('openRegisterModal');
     const registerModal = document.getElementById('registerModal');
-    const closeModalBtn = registerModal ? registerModal.querySelector('.modal-close-btn') : null;
 
     if (openRegisterModal && registerModal) {
         openRegisterModal.onclick = () => registerModal.classList.add('is-open');
-        
-        if (closeModalBtn) {
-            closeModalBtn.onclick = () => registerModal.classList.remove('is-open');
-        }
-
         registerModal.onclick = e => {
-            if (e.target === registerModal) {
-                registerModal.classList.remove('is-open');
-            }
+            if (e.target === registerModal) registerModal.classList.remove('is-open');
         };
     }
 });
 
-// A função toggleVideoSound deve ser globalmente acessível
 window.toggleVideoSound = toggleVideoSound;
+window.toggleFullscreen = toggleFullscreen;
