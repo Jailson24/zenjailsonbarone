@@ -7,258 +7,364 @@
 ============================================================ */
 function initTheme() {
     const toggle = document.getElementById("themeToggle");
+
     if (!toggle) return;
 
+    // Carrega o tema salvo ou usa o padrão 'dark'
     const saved = localStorage.getItem("theme");
     const currentTheme = saved || "dark";
 
     document.documentElement.setAttribute("data-theme", currentTheme);
+    toggle.setAttribute("aria-pressed", currentTheme === "light");
     toggle.textContent = currentTheme === "light" ? "☀️" : "🌙";
 
+    // Clique no botão
     toggle.addEventListener("click", () => {
         const isLight = document.documentElement.getAttribute("data-theme") === "light";
         const newTheme = isLight ? "dark" : "light";
 
         document.documentElement.setAttribute("data-theme", newTheme);
         localStorage.setItem("theme", newTheme);
+
+        toggle.setAttribute("aria-pressed", newTheme === "light");
         toggle.textContent = newTheme === "light" ? "☀️" : "🌙";
     });
 }
 
 /* ============================================================
-   2) SCROLL REVEAL
+   2) SCROLL REVEAL — efeito suave e inteligente
 ============================================================ */
 function initScrollReveal() {
-    const els = document.querySelectorAll(".reveal, .review");
+    // Aplica o efeito reveal tanto em sections (.reveal) quanto nos depoimentos (.review)
+    const els = document.querySelectorAll(".reveal");
 
     const observer = new IntersectionObserver(
-        entries => {
-            entries.forEach(entry => {
+        (entries) => {
+            entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add("visible");
                     observer.unobserve(entry.target);
                 }
             });
         },
-        { threshold: 0.1 }
+        {
+            threshold: 0.1, // Disparar quando 10% do elemento estiver visível
+            rootMargin: "0px 0px -10% 0px"
+        }
     );
 
-    els.forEach(el => observer.observe(el));
+    els.forEach((el) => observer.observe(el));
 }
 
 /* ============================================================
-   3) CARROSSEL
+   3) CARROSSEL — responsivo e automático
 ============================================================ */
 function initCarousel() {
     const track = document.querySelector(".carousel-track");
-    const carousel = document.querySelector(".carousel");
-    if (!track || !carousel) return;
+    const carouselContainer = document.querySelector(".carousel"); 
 
-    const slides = [...track.children];
+    if (!track || !carouselContainer) return;
+
     const prev = document.querySelector(".carousel-btn.prev");
     const next = document.querySelector(".carousel-btn.next");
+    const slides = [...track.children];
+    const totalSlides = slides.length;
 
     let index = 0;
-    let auto;
+    let autoPlayInterval;
 
     function update() {
-        carousel.scrollTo({
-            left: slides[index].offsetLeft,
-            behavior: "smooth"
+        if (slides.length === 0) return;
+        
+        const targetSlide = slides[index];
+        // Calculamos o deslocamento do slide alvo em relação ao início do track.
+        const targetOffsetLeft = targetSlide.offsetLeft; 
+
+        // Rola o container pai (carousel) até o slide desejado com scroll suave.
+        carouselContainer.scrollTo({
+            left: targetOffsetLeft,
+            behavior: 'smooth'
         });
     }
 
-    function autoplay() {
-        auto = setInterval(() => {
-            index = (index + 1) % slides.length;
+    function resetAutoPlay() {
+        clearInterval(autoPlayInterval);
+        startAutoPlay();
+    }
+
+    // Navegação Manual
+    if (next && prev) {
+        next.addEventListener("click", () => {
+            index = (index + 1) % totalSlides; 
             update();
-        }, 4500);
+            resetAutoPlay(); 
+        });
+
+        prev.addEventListener("click", () => {
+            // Garante que o índice não fique negativo ao decrementar
+            index = (index - 1 + totalSlides) % totalSlides;
+            update();
+            resetAutoPlay(); 
+        });
     }
 
-    function reset() {
-        clearInterval(auto);
-        autoplay();
+    // Auto-play
+    function startAutoPlay() {
+        autoPlayInterval = setInterval(() => {
+            index = (index + 1) % totalSlides;
+            update();
+        }, 4500); 
     }
 
-    next?.addEventListener("click", () => {
-        index = (index + 1) % slides.length;
-        update();
-        reset();
-    });
-
-    prev?.addEventListener("click", () => {
-        index = (index - 1 + slides.length) % slides.length;
-        update();
-        reset();
-    });
-
-    autoplay();
+    // Inicialização e responsividade: Recalcula a posição ao redimensionar
+    window.addEventListener("resize", update);
+    setTimeout(update, 100); 
+    startAutoPlay(); 
 }
 
 /* ============================================================
-   4) HEADER RESPONSIVO
+   4) HEADER INTELIGENTE
 ============================================================ */
 function initSmartHeader() {
     const header = document.querySelector(".header");
     if (!header) return;
 
-    function resize() {
-        header.classList.toggle("is-stack", window.innerWidth < 650);
+    function checkOverflow() {
+        // Usa um ponto de interrupção fixo que demonstrou funcionar bem com o layout flex
+        if (window.innerWidth < 650) { 
+            header.classList.add("is-stack");
+        } else {
+            header.classList.remove("is-stack");
+        }
     }
 
-    window.addEventListener("resize", resize);
-    resize();
+    window.addEventListener("resize", checkOverflow);
+    setTimeout(checkOverflow, 100);
 }
+
 
 /* ============================================================
-   5) FORMULÁRIOS
+   5) FORMULÁRIOS — Envio para Apps Script (POST)
 ============================================================ */
-async function sendFormData(data, type, status, form) {
-    const id =
-        type === "review" ? "scriptIdReview" :
-        type === "register" ? "scriptIdRegister" :
-        "scriptId";
 
-    const url = document.getElementById(id)?.value;
-    if (!url) return;
+async function sendFormData(data, formType, statusElement, form) {
+    let scriptIdInput;
+    if (formType === 'review') {
+        scriptIdInput = document.getElementById("scriptIdReview");
+    } else if (formType === 'register') {
+        scriptIdInput = document.getElementById("scriptIdRegister");
+    } else {
+        scriptIdInput = document.getElementById("scriptId");
+    }
 
-    status.textContent = "Enviando...";
+    if (!scriptIdInput || !scriptIdInput.value.startsWith('https://script.google.com/')) {
+        statusElement.style.color = 'red';
+        statusElement.textContent = `❌ Erro: Configure a URL de implantação do Apps Script no input hidden do formulário.`;
+        return;
+    }
+    
+    statusElement.textContent = "Enviando...";
+    statusElement.style.color = '#2a86ff'; // Usa a cor do accent
 
-    await fetch(url, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ formType: type, ...data })
+    const SCRIPT_URL = scriptIdInput.value;
+
+    const formData = new URLSearchParams({
+        formType: formType,
+        ...data
     });
 
-    status.textContent = "✅ Enviado com sucesso!";
-    form.reset();
+    try {
+        await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors', 
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData
+        });
+
+        statusElement.style.color = 'green';
+        if (formType === 'quote') {
+            statusElement.textContent = "✅ Cotação enviada! Entraremos em contato o mais breve possível.";
+        } else if (formType === 'review') {
+            statusElement.textContent = "✅ Depoimento enviado para moderação! Obrigado por sua avaliação.";
+        } else if (formType === 'register') {
+            statusElement.textContent = "✅ Cadastro realizado com sucesso! Você receberá novidades em breve.";
+            // Fecha o modal
+            setTimeout(() => {
+                document.getElementById('registerModal').classList.remove('is-open');
+                document.body.style.overflow = '';
+            }, 1500); 
+        }
+        form.reset();
+
+    } catch (error) {
+        console.error('Erro ao enviar formulário:', error);
+        statusElement.style.color = 'red';
+        statusElement.textContent = "❌ Erro ao enviar. Tente novamente ou verifique a conexão.";
+    }
 }
 
+// Inicialização dos Formulários (Cotação, Review, Cadastro)
 function initQuoteForm() {
-    const f = contactForm;
-    f?.addEventListener("submit", e => {
+    const form = document.getElementById("contactForm");
+    const status = document.getElementById("quoteFormStatus");
+    if (!form || !status) return;
+    form.addEventListener("submit", (e) => {
         e.preventDefault();
-        sendFormData({
-            cName: cName.value,
-            cPhone: cPhone.value,
-            cMsg: cMsg.value
-        }, "quote", quoteFormStatus, f);
+        const data = {
+            cName: document.getElementById("cName").value.trim(),
+            cPhone: document.getElementById("cPhone").value.trim(),
+            cMsg: document.getElementById("cMsg").value.trim()
+        };
+        sendFormData(data, 'quote', status, form);
     });
 }
 
 function initReviewForm() {
-    const f = addReviewForm;
-    f?.addEventListener("submit", e => {
+    const form = document.getElementById("addReviewForm");
+    const status = document.getElementById("reviewFormStatus");
+    if (!form || !status) return;
+    form.addEventListener("submit", (e) => {
         e.preventDefault();
-        sendFormData({
-            rName: rName.value,
-            rEmailReview: rEmailReview.value,
-            rRating: f.rating.value,
-            rComment: rComment.value
-        }, "review", reviewFormStatus, f);
+        const rating = form.querySelector('input[name="rating"]:checked');
+        
+        const data = {
+            rName: document.getElementById("rName").value.trim(),
+            rEmailReview: document.getElementById("rEmailReview").value.trim(), 
+            rRating: rating ? rating.value : '0', 
+            rComment: document.getElementById("rComment").value.trim()
+        };
+        sendFormData(data, 'review', status, form);
     });
 }
 
 function initRegisterForm() {
-    const f = registerForm;
-    f?.addEventListener("submit", e => {
+    const form = document.getElementById("registerForm");
+    const status = document.getElementById("registerFormStatus");
+    if (!form || !status) return;
+    form.addEventListener("submit", (e) => {
         e.preventDefault();
-        sendFormData({
-            rFName: rFName.value,
-            rLName: rLName.value,
-            rDOB: rDOB.value,
-            rPhone: rPhone.value,
-            rEmail: rEmail.value
-        }, "register", registerFormStatus, f);
+        const data = {
+            rFName: document.getElementById("rFName").value.trim(),
+            rLName: document.getElementById("rLName").value.trim(),
+            rDOB: document.getElementById("rDOB").value.trim(), 
+            rPhone: document.getElementById("rPhone").value.trim(), 
+            rEmail: document.getElementById("rEmail").value.trim()
+        };
+        sendFormData(data, 'register', status, form);
     });
 }
 
+
 /* ============================================================
-   6) MODAL
+   7) LÓGICA DO POP-UP MODAL E VÍDEO
 ============================================================ */
 function initModal() {
-    const modal = registerModal;
+    const modal = document.getElementById('registerModal');
+    const openBtn = document.getElementById('openRegisterModal');
+    const closeBtn = modal ? modal.querySelector('.modal-close-btn') : null;
 
-    openRegisterModal?.addEventListener("click", () => {
-        modal.classList.add("is-open");
-        document.body.style.overflow = "hidden";
+    if (!modal || !openBtn || !closeBtn) return;
+
+    const openModal = () => {
+        modal.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closeModal = () => {
+        modal.classList.remove('is-open');
+        document.body.style.overflow = '';
+    };
+
+    openBtn.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
     });
 
-    modal?.addEventListener("click", e => {
-        if (e.target === modal || e.target.classList.contains("modal-close-btn")) {
-            modal.classList.remove("is-open");
-            document.body.style.overflow = "";
-        }
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
     });
 }
 
-/* ============================================================
-   7) VÍDEO — AUTOPLAY SILENCIOSO + BOTÃO ATIVAR SOM
-============================================================ */
 function initVideoPlayer() {
     const yt = document.getElementById("ytLazy");
     if (!yt) return;
+    
+    // Função para carregar e iniciar o iframe
+    const loadVideo = (autoplay = false) => {
+        yt.innerHTML = `<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=${autoplay ? 1 : 0}&controls=1&loop=1&playlist=dQw4w9WgXcQ"
+            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+            allowfullscreen loading="lazy"></iframe>`;
+    };
 
-    yt.style.position = "relative";
+    const thumb = yt.querySelector('.yt-thumb');
+    const playIcon = yt.querySelector('.yt-play');
 
-    yt.innerHTML = `
-        <iframe
-            id="ytPlayer"
-            src="https://www.youtube.com/embed/BWoW-6frVU4?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&playlist=BWoW-6frVU4&enablejsapi=1"
-            allow="autoplay; encrypted-media; picture-in-picture"
-            allowfullscreen
-            loading="lazy"
-            style="width:100%;height:100%;border:0;">
-        </iframe>
-    `;
+    const handlePlayClick = () => {
+        if (thumb) thumb.style.display = 'none';
+        if (playIcon) playIcon.style.display = 'none';
+        loadVideo(true); 
+        yt.removeEventListener('click', handlePlayClick);
+    };
 
-    const soundBtn = document.createElement("div");
-    soundBtn.textContent = "🔊 Ativar som";
-    soundBtn.style.position = "absolute";
-    soundBtn.style.bottom = "15px";
-    soundBtn.style.right = "15px";
-    soundBtn.style.background = "rgba(0,0,0,0.75)";
-    soundBtn.style.color = "#fff";
-    soundBtn.style.padding = "10px 14px";
-    soundBtn.style.borderRadius = "10px";
-    soundBtn.style.fontSize = "14px";
-    soundBtn.style.cursor = "pointer";
-    soundBtn.style.zIndex = "10";
+    // Inicializa o player para ser clicável
+    yt.addEventListener('click', handlePlayClick);
+}
 
-    yt.appendChild(soundBtn);
 
-    soundBtn.addEventListener("click", e => {
-        e.stopPropagation();
 
-        const iframe = document.getElementById("ytPlayer");
-        if (!iframe) return;
+/* ============================================================
+   MODAL IMAGEM FULLSCREEN (CARROSSEL)
+============================================================ */
+function initImageModal() {
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("imageModalImg");
+    const closeBtn = document.querySelector(".image-modal-close");
 
-        iframe.contentWindow.postMessage(
-            JSON.stringify({ event: "command", func: "unMute", args: [] }),
-            "*"
-        );
+    if (!modal || !modalImg || !closeBtn) return;
 
-        iframe.contentWindow.postMessage(
-            JSON.stringify({ event: "command", func: "setVolume", args: [100] }),
-            "*"
-        );
+    document.querySelectorAll(".carousel-track img").forEach(img => {
+        img.style.cursor = "zoom-in";
+        img.addEventListener("click", () => {
+            modal.classList.add("open");
+            modalImg.src = img.src;
+            document.body.style.overflow = "hidden";
+        });
+    });
 
-        soundBtn.remove();
+    const closeModal = () => {
+        modal.classList.remove("open");
+        modalImg.src = "";
+        document.body.style.overflow = "";
+    };
+
+    closeBtn.addEventListener("click", closeModal);
+
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
     });
 }
 
+
 /* ============================================================
-   EXECUÇÃO
+   EXECUÇÃO GERAL
 ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     initScrollReveal();
     initCarousel();
+    initImageModal();
     initSmartHeader();
-    initQuoteForm();
-    initReviewForm();
-    initRegisterForm();
+    initQuoteForm(); 
+    initReviewForm(); 
+    initRegisterForm(); 
     initModal();
     initVideoPlayer();
 });
