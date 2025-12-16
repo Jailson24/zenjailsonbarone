@@ -712,6 +712,20 @@
     cursor: pointer;
     font-weight: bold;
 }
+        /* === LIBERA CLIQUE NAS IMAGENS DO CARROSSEL === */
+.carousel-track img {
+    pointer-events: auto;
+    position: relative;
+    z-index: 5;
+}
+
+/* === GARANTE QUE OVERLAYS NÃO BLOQUEIEM O CLIQUE === */
+.carousel::before,
+.carousel::after,
+.carousel-track::before,
+.carousel-track::after {
+    pointer-events: none;
+}
 </style>
 
 </head>
