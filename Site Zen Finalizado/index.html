@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ZEN Seguros • Jailson Barone | Proteção Automotiva Total</title>
+    <meta name="description" content="Seguro automotivo completo com assistência 24h. Solicite sua cotação com Jailson Barone, seu Representante Autorizado ZEN Seguros.">
+
+    <meta property="og:title" content="ZEN Seguros - Proteção Automotiva Total">
+    <meta property="og:description" content="Seguro auto com assistência 24h e cobertura completa. Cotação Rápida!">
+    <meta property="og:image" content="img/logo.png">
+    <meta property="og:type" content="website">
+
+    <style>
+        /* ====================================
+           Variáveis e Reset 
+        ==================================== */
+        :root {
+            --dark-bg: #030a13; 
+            --dark-surface: #0a1727;
+            --light-text: #f0f4f8; 
+            --dark-text: #1a1a1a;
+            --accent-1: #2a86ff; 
+            --accent-2: #216be5;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --radius: 12px; 
+            --gap-size: 1.5rem; 
+        }
+
+        [data-theme="dark"] {
+            --bg-color: var(--dark-bg);
+            --surface-color: var(--dark-surface);
+            --text-color: var(--light-text);
+            --shadow: 0 8px 25px var(--shadow-color);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f0f4f8;
+            --surface-color: #ffffff;
+            --text-color: var(--dark-text);
+            --shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.4s, color 0.4s;
+            line-height: 1.7;
+        }
+
+        h1, h2, h3 {
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            color: var(--accent-1);
+        }
+        
+        @media (max-width: 768px) {
+            h2 { font-size: 2rem; margin-bottom: 2rem; }
+        }
+
+        .muted {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .wrap {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 var(--gap-size);
+        }
+
+        section {
+            padding: 5rem 0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--gap-size) var(--gap-size);
+            border-bottom: 1px solid var(--dark-surface);
+            background-color: var(--bg-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo img {
+            height: 55px;
+            width: auto;
+        }
+
+        .title p {
+            font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .title h2 {
+            font-size: 1rem;
+            margin: 0;
+            color: var(--accent-1);
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        @media (max-width: 650px) {
+            .header.is-stack {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding-bottom: 10px;
+            }
+            .header.is-stack .header-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: 2px solid var(--accent-1);
+            transition: background-color 0.3s, color 0.3s, transform 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-1);
+            color: var(--light-text);
+            border-color: var(--accent-1);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-2);
+            border-color: var(--accent-2);
+            transform: translateY(-2px);
+        }
+        
+        .btn:hover:not(.btn-primary) {
+            background-color: var(--surface-color);
+            color: var(--accent-1);
+        }
+
+        .icon-btn {
+            background: var(--surface-color);
+            border: 1px solid var(--accent-1);
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+        
+        .icon-btn:hover {
+            background-color: var(--accent-1);
+            color: var(--light-text);
+        }
+
+        /* ====================================
+           Hero Section (Vídeo) 
+        ==================================== */
+        .hero {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+        }
+
+        .hero-video {
+            flex: 1.2;
+            aspect-ratio: 16 / 9;
+            position: relative;
+            background-color: #000;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            text-indent: -9999px; 
+            font-size: 0;
+            line-height: 0;
+            color: transparent;
+        }
+        
+        .hero-video > * {
+            text-indent: 0;
+            font-size: initial;
+            line-height: initial;
+            color: var(--text-color); 
+        }
+
+        .hero-video iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none; 
+        }
+
+        /* Fullscreen Helper */
+        :fullscreen iframe, :-webkit-full-screen iframe {
+            width: 100vw !important;
+            height: 100vh !important;
+        }
+
+        #videoSoundToggle, #fullscreenToggle {
+            position: absolute;
+            bottom: 10px;
+            width: 45px;
+            height: 45px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 30;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+            text-indent: 0;
+            line-height: 1;
+        }
+
+        #videoSoundToggle { right: 10px; }
+        #fullscreenToggle { left: 10px; }
+
+        #videoSoundToggle:hover, #fullscreenToggle:hover {
+            background: var(--accent-1);
+        }
+
+        .hero-text {
+            flex: 1;
+        }
+        
+        .hero-text h2 {
+            text-align: left;
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--light-text);
+        }
+
+        .hero-text p {
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .hero-text .btn {
+            margin-right: 1rem;
+        }
+
+        @media (max-width: 992px) {
+            .hero { flex-direction: column; text-align: center; }
+            .hero-text h2 { text-align: center; font-size: 2.5rem; color: var(--accent-1); }
+            .hero-video, .hero-text { flex: none; width: 100%; }
+        }
+
+        /* ====================================
+           Carousel (Galeria)
+        ==================================== */
+        .carousel-section {
+            background-color: var(--surface-color);
+        }
+
+        .carousel {
+            position: relative;
+            overflow-x: scroll;
+            padding: 0 40px; 
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        .carousel::-webkit-scrollbar { display: none; }
+        .carousel { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .carousel-track {
+            display: flex;
+            gap: 1.5rem;
+            padding: 10px 0;
+        }
+
+        .carousel-track img {
+            width: 350px;
+            height: 220px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            flex-shrink: 0;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: var(--accent-1);
+            color: white;
+            border: none;
+            padding: 1rem 0.5rem;
+            cursor: pointer;
+            z-index: 50;
+            font-size: 1.5rem;
+            border-radius: var(--radius);
+            transition: background-color 0.3s;
+        }
+
+        .carousel-btn.prev { left: 0; }
+        .carousel-btn.next { right: 0; }
+        
+        @media (max-width: 768px) {
+            .carousel-track img { width: 280px; height: 180px; }
+            .carousel { padding: 0 10px; }
+            .carousel-btn { display: none; }
+        }
+
+        /* ====================================
+           Reviews Section 
+        ==================================== */
+        .reviews-section {
+            padding-bottom: 5rem;
+        }
+
+        .reviews {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        
+        @media (max-width: 768px) {
+            .reviews { grid-template-columns: 1fr; }
+        }
+
+        .review {
+            background-color: var(--surface-color);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+            border-left: 5px solid var(--accent-1);
+        }
+        
+        .review.visible {
+             opacity: 1;
+             transform: translateY(0);
+        }
+
+        .review p {
+            font-style: italic;
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+        }
+
+        .stars {
+            font-size: 1.6rem;
+            color: #ccc;
+            letter-spacing: 2px;
+            display: inline-block;
+        }
+        
+        .stars[data-rating="5"] { color: gold; }
+        .stars[data-rating="4"] { color: gold; }
+        .stars[data-rating="3"] { color: orange; }
+
+        .author {
+            display: block;
+            margin-top: 10px;
+            font-weight: 600;
+            color: var(--accent-1);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .add-review-container {
+            max-width: 650px;
+            margin: 0 auto;
+            background-color: var(--surface-color);
+            padding: 2.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .add-review-container h3 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--accent-1);
+            font-size: 1.8rem;
+        }
+
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .star-rating input { display: none; }
+        
+        .star-rating label {
+            font-size: 2.5rem;
+            color: #777;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.2s;
+        }
+        
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input:checked ~ label {
+            color: gold;
+            transform: scale(1.1);
+        }
+
+        /* ====================================
+           Forms e Contato 
+        ==================================== */
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            padding: 15px;
+            border: 1px solid var(--accent-1);
+            border-radius: 8px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: 1.05rem;
+        }
+
+        /* ====================================
+           Modal (Cadastro)
+        ==================================== */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%; 
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s;
+            overflow-y: auto; 
+            padding: 20px 0;
+        }
+
+        .modal.is-open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--surface-color);
+            padding: 3rem;
+            border-radius: var(--radius);
+            max-width: 500px;
+            width: 90%;
+            box-shadow: var(--shadow);
+            transform: scale(0.95);
+            max-height: calc(100vh - 40px); 
+            overflow-y: auto;
+        }
+
+        .fab-whats {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background-color: #25d366;
+            color: white;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            z-index: 90;
+            transition: transform 0.3s;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 1.5rem var(--gap-size);
+            border-top: 1px solid var(--dark-surface);
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
+
+        /* ===============================
+           EFEITOS VISUAIS
+        ================================ */
+        .header, .review, .add-review-container, .modal-content, .carousel-track img, .hero-video {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04);
+        }
+
+        /* MODAL IMAGEM FULLSCREEN */
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            justify-content: center;
+            align-items: center;
+        }
+        .image-modal.open { display: flex; }
+        .image-modal-content { max-width: 95vw; max-height: 95vh; object-fit: contain; border-radius: 12px; }
+        .image-modal-close { position: absolute; top: 20px; right: 30px; font-size: 40px; color: white; cursor: pointer; }
+    </style>
+</head>
+
+<body id="top">
+
+<header class="header wrap" role="banner">
+    <div class="brand">
+        <a href="#top" class="logo" aria-label="ZEN Seguros - Voltar ao início">
+            <img src="./img/logo.png" alt="Logo ZEN Seguros">
+        </a>
+        <div class="title">
+            <p class="main-title">ZEN Seguros</p>
+            <h2>Jailson Barone</h2>
+            <p class="muted">Seu Veículo Protegido 24 horas!</p>
+        </div>
+    </div>
+    <div class="header-actions">
+        <button id="themeToggle" class="icon-btn" aria-label="Alternar tema claro/escuro">🌙</button>
+        <a id="whatsappTop" class="btn btn-primary" href="https://wa.me/5521997882718?text=Olá, quero uma cotação!" target="_blank">WhatsApp</a>
+    </div>
+</header>
+
+<section class="hero wrap reveal">
+    <div class="hero-video" id="ytLazy"></div>
+    <div class="hero-text">
+        <h2>Proteção que acompanha você</h2>
+        <p>Tenha tranquilidade com coberturas completas e assistência rápida. O melhor seguro auto com a confiança de um representante dedicado.</p>
+        <a href="https://drive.google.com/file/d/1C_IjKY_Y2qe64_rMFT16UvTMApRDrvaP/view?usp=drive_link" target="_blank" class="btn btn-primary">Baixar Condições Gerais</a>
+        <button id="openRegisterModal" class="btn">Receber Novidades</button>
+    </div>
+</section>
+
+<section class="wrap">
+        <h2 class="reveal">Coberturas Especiais</h2>
+        <div class="carousel-container reveal">
+            <button class="carousel-btn prev" aria-label="Anterior">‹</button>
+            <div class="carousel">
+                <div class="carousel-track">
+                    <div class="cover-card">
+                        <img src="img/cobertura-taxi.png" alt="Táxi">
+                        <div class="cover-overlay">
+                            <h3>Táxi</h3>
+                            <p>Proteção completa para quem trabalha na rua.</p>
+                        </div>
+                    </div>
+                    <div class="cover-card">
+                        <img src="img/cobertura-uber.png" alt="Uber">
+                        <div class="cover-overlay">
+                            <h3>Uber</h3>
+                            <p>Tranquilidade enquanto você gera renda.</p>
+                        </div>
+                    </div>
+                    <div class="cover-card">
+                        <img src="img/cobertura-byd.png" alt="BYD">
+                        <div class="cover-overlay">
+                            <h3>BYD</h3>
+                            <p>Cobertura para tecnologia de ponta.</p>
+                        </div>
+                    </div>
+                    <div class="cover-card">
+                        <img src="img/cobertura-eletrico.png" alt="Elétricos">
+                        <div class="cover-overlay">
+                            <h3>Carros Elétricos</h3>
+                            <p>Seguro especializado para o futuro.</p>
+                        </div>
+                    </div>
+                    <div class="cover-card">
+                        <img src="img/cobertura-moto.png" alt="Motos">
+                        <div class="cover-overlay">
+                            <h3>Motocicletas</h3>
+                            <p>Seguro especializado para motos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-btn next" aria-label="Próximo">›</button>
+        </div>
+    </section>
+
+<section class="carousel-section wrap reveal">
+    <h2>Nossos Clientes Satisfeitos</h2>
+    <div class="carousel" role="region" aria-label="Galeria de Veículos Segurados">
+        <button class="carousel-btn prev" aria-label="Slide anterior">‹</button>
+        <div class="carousel-track">
+            <img src="img/gal1.jpg" alt="Carro segurado 1">
+            <img src="img/gal2.jpg" alt="Carro segurado 2">
+            <img src="img/gal3.jpg" alt="Carro segurado 3">
+            <img src="img/gal1.jpg" alt="Carro segurado 4">
+            <img src="img/gal2.jpg" alt="Carro segurado 5">
+            <img src="img/gal3.jpg" alt="Carro segurado 6">
+        </div>
+        <button class="carousel-btn next" aria-label="Próximo slide">›</button>
+    </div>
+</section>
+
+<section class="reviews-section wrap reveal">
+    <h2>O Que Dizem Nossos Clientes</h2>
+    
+    <div id="reviewsContainer" class="reviews">
+        <div class="review visible">
+            <p>"Atendimento nota 10 e preço justo! Tive que usar a assistência e foi muito rápido e eficiente. Recomendo a todos."</p>
+            <div class="stars" data-rating="5">★★★★★</div>
+            <span class="author">— Patrícia F.</span>
+        </div>
+        <div class="review visible">
+            <p>"Jailson Barone é muito atencioso e me ajudou a encontrar o melhor plano para o meu veículo. A ZEN Seguros é de confiança."</p>
+            <div class="stars" data-rating="5">★★★★★</div>
+            <span class="author">— Rodrigo A.</span>
+        </div>
+        <div class="review visible">
+            <p>"Processo de cotação simples e rápido. Ótimas coberturas. Satisfeito com o serviço!"</p>
+            <div class="stars" data-rating="4">★★★★</div>
+            <span class="author">— Carlos M.</span>
+        </div>
+        <div class="review visible">
+            <p>"Fui muito bem atendido pelo Jailson. Ele esclareceu todas as minhas dúvidas sobre a proteção e o custo-benefício é excelente."</p>
+            <div class="stars" data-rating="5">★★★★★</div>
+            <span class="author">— Fernanda L.</span>
+        </div>
+        <div class="review visible">
+            <p>"Eu era assegurado em outra empresa, mas essa cobertura completa e a assistência 24h compensaram mais. Bom serviço."</p>
+            <div class="stars" data-rating="3">★★★★★</div>
+            <span class="author">— Gustavo P.</span>
+        </div>
+        <div class="review visible">
+            <p>"Uso a ZEN Seguros há muito tempo e nunca tive problemas. precisei usar e o reboque chegou em menos de 30 minutos."</p>
+            <div class="stars" data-rating="5">★★★★★</div>
+            <span class="author">— Alice R.</span>
+        </div>
+    </div>
+    
+    <div class="add-review-container reveal">
+
+        <h3>Deixe seu depoimento</h3>
+        <form id="addReviewForm" class="contact-form">
+            <input type="hidden" id="scriptIdReview" value="https://script.google.com/macros/s/AKfycbw2YtU6gP89HpcZo_rSJnZ42TbkEAOGmQk1ArQZ9jfEIaxPO_OiiE9NMdGNeGoDUvGe/exec">
+            <label for="rName">Seu Nome</label>
+            <input id="rName" type="text" required>
+            <label for="rEmailReview">Seu E-mail</label>
+            <input id="rEmailReview" type="email" required>
+            <label>Sua Avaliação</label>
+            <div class="star-rating">
+                <input type="radio" id="star5" name="rating" value="5" required><label for="star5">★</label>
+                <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+                <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+            </div>
+            <label for="rComment">Comentário</label>
+            <textarea id="rComment" required></textarea>
+            <button type="submit" class="btn btn-primary">Enviar Avaliação</button>
+        </form>
+    </div>
+</section>
+
+<section class="contact-section wrap reveal">
+    <h2>Solicite Sua Cotação Rápida</h2>
+    <form id="contactForm" class="contact-form">
+        <input type="hidden" id="scriptId" value="https://script.google.com/macros/s/AKfycbw2YtU6gP89HpcZo_rSJnZ42TbkEAOGmQk1ArQZ9jfEIaxPO_OiiE9NMdGNeGoDUvGe/exec">
+        <label for="cName">Nome completo</label>
+        <input id="cName" required>
+        <label for="cPhone">Telefone</label>
+        <input id="cPhone" type="tel" required>
+        <label for="cMsg">Detalhes do Veículo e Mensagem</label>
+        <textarea id="cMsg" required></textarea>
+        <button class="btn btn-primary">Enviar Solicitação</button>
+    </form>
+</section>
+
+<a href="https://wa.me/5521997882718?text=Olá, quero uma cotação!" target="_blank" class="fab-whats">💬</a>
+
+<footer class="footer wrap reveal">
+    <p>© 2026 ZEN Seguros - Todos os direitos reservados. Representante: Jailson Barone.</p>
+</footer>
+
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+        <h3>Receba Ofertas Exclusivas!</h3>
+        <form id="registerForm" class="contact-form">
+            <label for="rFName">Nome</label>
+            <input id="rFName" required>
+            <label for="rEmail">E-mail</label>
+            <input id="rEmail" type="email" required>
+            <button class="btn btn-primary">Cadastrar</button>
+        </form>
+    </div>
+</div>
+
+<div id="imageModal" class="image-modal">
+    <span class="image-modal-close">&times;</span>
+    <img class="image-modal-content" id="imageModalImg">
+</div>
+
+<script src="script.js" defer></script>
+</body>
+</html>
