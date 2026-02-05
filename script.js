@@ -80,10 +80,11 @@ function loadVideo(unmute = false) {
 
     yt.innerHTML = ''; 
 
+    // Substituído para o novo vídeo: 0WPXa_NGiwk
     const iframeHTML = `
         <iframe
             id="ytIframe"
-            src="https://www.youtube.com/embed/BWoW-6frVU4?autoplay=1&mute=${muteParam}&controls=0&modestbranding=1&rel=0&loop=1&playlist=BWoW-6frVU4&enablejsapi=1"
+            src="https://www.youtube.com/embed/0WPXa_NGiwk?autoplay=1&mute=${muteParam}&controls=0&modestbranding=1&rel=0&loop=1&playlist=0WPXa_NGiwk&enablejsapi=1"
             allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
             allowfullscreen
             loading="lazy">
