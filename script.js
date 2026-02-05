@@ -83,7 +83,7 @@ function loadVideo(unmute = false) {
     const iframeHTML = `
         <iframe
             id="ytIframe"
-            src="https://www.youtube.com/shorts/0WPXa_NGiwk?autoplay=1&mute=${muteParam}&controls=0&modestbranding=1&rel=0&loop=1&playlist=BWoW-6frVU4&enablejsapi=1"
+            src="https://www.youtube.com/embed/BWoW-6frVU4?autoplay=1&mute=${muteParam}&controls=0&modestbranding=1&rel=0&loop=1&playlist=BWoW-6frVU4&enablejsapi=1"
             allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
             allowfullscreen
             loading="lazy">
