@@ -221,7 +221,8 @@
             color: var(--text-color); 
         }
 
-        .hero-video iframe {
+        .hero-video iframe,
+        .hero-video video {
             width: 100%;
             height: 100%;
             border: none;
@@ -229,10 +230,12 @@
             top: 0;
             left: 0;
             pointer-events: none; 
+            object-fit: cover;
         }
 
         /* Fullscreen Helper */
-        :fullscreen iframe, :-webkit-full-screen iframe {
+        :fullscreen iframe, :-webkit-full-screen iframe,
+        :fullscreen video, :-webkit-full-screen video {
             width: 100vw !important;
             height: 100vh !important;
         }
@@ -578,7 +581,9 @@
 </header>
 
 <section class="hero wrap reveal">
-    <div class="hero-video" id="ytLazy"></div>
+    <div class="hero-video">
+        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/-sCQS41pXRY?autoplay=1&mute=1&loop=1&playlist=-sCQS41pXRY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
     <div class="hero-text">
         <h2>O seguro que acompanha você</h2>
         <p>Tenha tranquilidade com coberturas completas e assistência rápida. O melhor seguro auto com a confiança de um representante dedicado.</p>
